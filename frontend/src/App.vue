@@ -1,8 +1,15 @@
 <template>
-   <h1>Proyecto del Cinema (Tesis del Semillero)</h1>
+   <Nav/>
 </template>
 
 <script>
+import Nav from "./components/Nav.vue";
+
+export default {
+  components:{
+    Nav
+  }
+}
 
 </script>
 
