@@ -1,4 +1,4 @@
-import genresModel from '../models/genres.model.js';
+import genresModel from '../models/genre.model.js';
 
 export const creategenres = async (req, res) => {
     const { name } = req.body;
