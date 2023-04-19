@@ -1,0 +1,26 @@
+:root {
+    --color-1: #039be5;
+    --color-2: #007bff;
+    --color-3: #ffc90a;
+    --color-4: #949494; 
+    --color-5: #2b2b2b;
+    --white: #fff;
+    --black: #000;
+  }
+  
+  body {
+    font-family: "Bungee", cursive;
+    background-color: #f2f3f8;
+    overflow-x: hidden;
+    scroll-behavior: smooth;
+  }
+  
+  .open-sans {
+    font-family: "Open Sans";
+  }
+  
+  .open-sans-bold {
+    font-family: "Open Sans";
+    font-weight: 500;
+  }
+  
