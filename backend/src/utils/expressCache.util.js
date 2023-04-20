@@ -14,7 +14,7 @@ class ExpressCache {
     middleware = (duration) => {
         return (req, res, next) => {
             // Set the key
-            const key = 'express-cache' + req.url;
+            const key = 'express-cache' + req.url + `-${req.method}`;
             // Get the cached body
             const cachedResponse = this.cache.get(key);
             // If the cached body exists, send it

@@ -39,7 +39,7 @@ const UserModel = cinemaDatabase.define('user', {
         type: DataTypes.STRING,
         allowNull: false
     },
-}, { timestamps: false, tableName: 'users'});
+}, { tableName: 'users'});
 
 // Exporting the user model
 export default UserModel;

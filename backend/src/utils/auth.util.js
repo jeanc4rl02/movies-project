@@ -1,5 +1,5 @@
 // Description: This file contains the authentication utilities
-// Author: Sebastián Gámez
+// Author: Sebastián Gámez Ariza
 
 // Importing the environment variables
 import { JWT_PASSWORD, JWT_EXPIRATION } from '../config/env.config.js';
