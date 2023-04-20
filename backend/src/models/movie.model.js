@@ -10,21 +10,25 @@ import { DataTypes, INTEGER, STRING } from 'sequelize';
 // Define account model
 const moviesModel = cinemaDatabase.define('movie', {
     id: {
-        type: INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
     name: {
-        type: STRING,
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     duration: {
-        type: STRING,
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     trailer: {
-        type: STRING,
+        type: DataTypes.STRING,
+        allowNull: false,
     },
     image: {
-        type: STRING,
+        type: DataTypes.JSON,
+        allowNull: false,
     },
 },
     {

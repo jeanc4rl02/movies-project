@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import { createmovie, getmovies, getOnemovie, updatemovie, deletemovie } from '../controllers/movie.controller.js';
 import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
+import fileUpload from 'express-fileupload';
 
 const router = Router();
 
@@ -87,7 +88,7 @@ const router = Router();
  *                  $ref: '#/components/schemas/movies'   
  *      responses:
  *          200:
- *              description: The movies was succesfully created
+ *              description: The movies was successfully created
  *              content:
  *                  application/json:
  *                      schema: 
@@ -96,7 +97,7 @@ const router = Router();
  *      400: 
  *        description: There are no registered movies
  */
-router.post('/', verifyTokenMiddleware, createmovie)
+router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), verifyTokenMiddleware, createmovie)
 
 /**
 * @swagger
@@ -171,7 +172,7 @@ router.get('/:id', verifyTokenMiddleware, getOnemovie)
  *                  description: There is no movie registered with the provided id.
  */
 
-router.put('/:id', verifyTokenMiddleware, updatemovie)
+router.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), verifyTokenMiddleware, updatemovie)
 
 /**
  * @swagger

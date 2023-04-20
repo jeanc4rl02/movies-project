@@ -12,16 +12,25 @@ const moviesSchema = joi.object({
         .min(1),
     name: joi
         .string()
-        .min(1),
+        .min(1)
+        .max(50)
+        .required(),
     duration: joi
         .string()
-        .min(1),
+        .min(1)
+        .max(50)
+        .required(),
     trailer: joi
         .string()
-        .min(1),
+        .min(1)
+        .max(50)
+        .required(),
     image: joi
-        .string()
-        .min(1),
+        .object({
+            public_url: joi.string(),
+            secure_url: joi.string()
+        })
+        .required(),
 });
 
 // Exporting the schema
