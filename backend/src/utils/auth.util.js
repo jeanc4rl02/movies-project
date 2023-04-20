@@ -90,4 +90,4 @@ class AuthUtil {
 }
 
 // Export the auth utilities
-export default new AuthUtil();
+export default AuthUtil;

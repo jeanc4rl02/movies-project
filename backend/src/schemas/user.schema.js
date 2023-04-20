@@ -24,8 +24,11 @@ const userSchema = Joi.object({
     password: Joi
         .string()
         .min(6)
-        .max(30)
-        .alphanum(),
+        .max(30),
+    newPassword: Joi
+        .string()
+        .min(6)
+        .max(30),
     phone: Joi
         .string()
         .min(6)

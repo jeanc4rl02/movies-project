@@ -21,9 +21,9 @@ class UserService {
                 const offset = (page - 1) * limit;
                 // Get all users from the database
                 const usersDB = await this.userModel.findAll({
-                    attributes: [{
+                    attributes: {
                         exclude: ['password']
-                    }],
+                    },
                     limit,
                     offset,
                     order: [['createdAt', 'DESC']],
@@ -47,10 +47,9 @@ class UserService {
             else {
                 // Get all users from the database
                 const usersDB = await this.userModel.findAll({
-                    attributes: [{
+                    attributes: {
                         exclude: ['password']
-                    }],
-                    order: [['createdAt', 'DESC']],
+                    },
                 });
                 // Create the response
                 response = {
@@ -81,11 +80,7 @@ class UserService {
         // Try to create the user
         try {
             // Get the user from the database
-            const userDB = await this.userModel.findByPk(id, {
-                attributes: [{
-                    exclude: ['password']
-                }]
-            });
+            const userDB = await this.userModel.findByPk(id);
             // Create the response
             response = {
                 status: 200,
@@ -171,7 +166,11 @@ class UserService {
         let response;
         // Try to update the user
         try {
-            await this.userModel.update(id, user);
+            await this.userModel.update(user, {
+                where: {
+                    id: id
+                }
+            });
             // Create the response
             response = {
                 status: 200,
@@ -197,7 +196,11 @@ class UserService {
         let response;
         // Try to delete the user
         try {
-            await this.userModel.destroy(id);
+            await this.userModel.destroy({
+                where: {
+                    id: id
+                }
+            });
             // Create the response
             response = {
                 status: 200,
