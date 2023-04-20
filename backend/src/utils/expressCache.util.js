@@ -24,7 +24,6 @@ class ExpressCache {
                 // If the cached body doesn't exist, set the response
                 res.sendResponse = res.send;
                 // Set the cache and the response with the same body and status
-                // @ts-ignore
                 res.send = (body) => {
                     // Get the status
                     const status = res.statusCode;
