@@ -25,6 +25,7 @@
           </n-space>
         </div>
         <div v-if="title === 'Iniciar sesión'">
+            <n-image src="./src/assets/logo.png" alt="Logo de mi sitio web" class="logo" />
           <n-space vertical>
             <n-form ref="formInstRef">
               <n-form-item label="Correo">
@@ -38,8 +39,8 @@
         </div>
       </div>
       <n-space>
-      <button class="buttons" @click="toggleModal">Cerrar <n-icon> <CloseCircle/></n-icon></button>
       <button class="buttons" @click="toggleModal">Ingresar <n-icon> <LogIn/></n-icon></button>
+       <button class="buttons" @click="toggleModal"> Cerrar <n-icon> <CloseCircle/></n-icon></button>
       </n-space>
     </div>
   </div>
@@ -86,7 +87,7 @@ export default {
 
 .modal-container {
   background-color: white;
-  width: 40%;
+  width: 20%;
   max-width: 800px;
   padding: 15px;
   border-radius: 8px;
@@ -102,9 +103,12 @@ export default {
   border: none;
   cursor: pointer;
   font-size: 16px;
-  margin-left: 120px;
   height: 30px;
 }
 
-
+.n-image{
+  width: 80px;
+  height: 80px;
+  margin-left: 90px;
+}
 </style>

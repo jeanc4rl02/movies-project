@@ -65,13 +65,13 @@ n-nav {
   overflow: hidden;
   font-family: "Poppins", sans-serif !important;
   font-weight: 800;
+  margin-bottom: 8px;
 }
 
 .logo {
   width: 40px;
   height: 40px;
   margin-right: auto;
-  border-radius: 8px;
   animation: moveUpDown 4s infinite;
 }
 

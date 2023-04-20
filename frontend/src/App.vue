@@ -1,13 +1,13 @@
 <template>
-   <Nav/>
+   <Car/>
 </template>
 
 <script>
-import Nav from "./components/Nav.vue";
+import Car from "./views/Car.vue";
 
 export default {
   components:{
-    Nav
+    Car
   }
 }
 
