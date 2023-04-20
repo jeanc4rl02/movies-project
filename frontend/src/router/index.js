@@ -16,13 +16,28 @@ const router = createRouter({
       name: "admin", 
       component: () => import("../modules/main/layouts/AdminLayout.vue"),
       children: [
-        /*
+        
         {
-          path: "",
-          name: "admin-rooms",
-          component: () => import("@/modules/users/views/UsersView.vue"),
+            path: "",
+            name: "admin-cinemas",
+            component: () => import("../modules/cinemas/views/CinemaView.vue"),
+          },
+        {
+          path: "salas",
+          name: "admin-salas",
+          component: () => import("../modules/rooms/views/RoomView.vue"),
         },
-         */
+        {
+          path: "peliculas",
+          name: "admin-peliculas",
+          component: () => import("../modules/movies/views/MoviesView.vue"),
+        },
+        {
+          path: "Show",
+          name: "admin-show",
+          component: () => import("../modules/shows/views/ShowView.vue"),
+        },
+         
       ],
     },
 
