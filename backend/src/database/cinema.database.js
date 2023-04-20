@@ -1,3 +1,7 @@
+// Description: This file contains the database connection
+// Author: Sebastián Gámez Ariza
+// Coauthor: Jean Carlos Carrillo
+
 // Importing the database url
 import {DB_URL} from '../config/env.config.js';
 
