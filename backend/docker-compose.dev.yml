@@ -1,0 +1,28 @@
+# Description: Docker compose file to develop and test the application locally
+# Author: Sebastián Gámez Ariza
+
+version: '3.9'
+services: 
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.dev
+    volumes:
+      - db_data:/var/lib/postgresql/data
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.dev
+    links:
+      - db
+    volumes:
+      - .:/home/app
+
+volumes:
+  db_data:

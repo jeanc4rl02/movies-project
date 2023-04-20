@@ -1,0 +1,10 @@
+# Description: Dockerfile for development environment
+# Author: Sebastián Gámez Ariza
+
+FROM node:16.19.1
+
+RUN mkdir /home/app
+
+WORKDIR /home/app
+
+CMD ["npm", "run", "dev"]

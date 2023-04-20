@@ -1,3 +1,7 @@
+// Description: Syncs the database with the models
+// Author: Sebastián Gámez Ariza
+// Coauthor: Jean Carlos Carrillo
+
 // Sync the database with the models
 const syncDatabase = async () => {
 	// Try to sync the database
