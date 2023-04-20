@@ -1,1 +1,0 @@
-# Archivo ejemplo para que la carpeta la detecte git.

@@ -1,8 +1,16 @@
 <template>
-   <h1>Proyecto del Cinema (Tesis del Semillero)</h1>
+   <div>
+      <RouterView/>
+   </div>
 </template>
 
 <script>
+ import {RouterView} from 'vue-router';
+ export default {
+   components:{
+      RouterView,
+   }
+ }
 
 </script>
 
