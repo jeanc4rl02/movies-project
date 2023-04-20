@@ -1,3 +1,7 @@
+// Description: This file contains the database connection test function
+// Author: Sebastián Gámez Ariza
+// Coauthor: Jean Carlos Carrillo
+
 // Import the database connection
 import deviceDatabase from './cinema.database.js';
 

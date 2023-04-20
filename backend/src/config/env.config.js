@@ -1,3 +1,5 @@
+// Description: This file contains the configuration for the environment variables
+
 // Importing the dotenv module
 import {config} from 'dotenv';
 

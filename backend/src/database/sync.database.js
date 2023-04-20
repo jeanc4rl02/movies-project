@@ -1,3 +1,7 @@
+// Description: Syncs the database with the models
+// Author: Sebastián Gámez Ariza
+// Coauthor: Jean Carlos Carrillo
+
 import cinemaModel from '../models/cinema.model.js'
 // Sync the database with the models
 const syncDatabase = async () => {
