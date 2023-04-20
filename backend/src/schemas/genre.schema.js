@@ -12,8 +12,8 @@ const genresSchema = joi.object({
         .min(1),
     name: joi
         .string()
-        .min(),
+        .min(1),
 });
-    
+
 // Exporting the schema
 export default genresSchema;
