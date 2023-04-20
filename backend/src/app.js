@@ -12,7 +12,7 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerConfiguration from './config/swagger.config.js';
 
 // Importing the routes
-
+import cinemaRouter from './routes/cinema.routes.js';
 
 // Creating an instance of express
 const app = express();
@@ -24,6 +24,7 @@ app.use(morgan('dev'));
 
 // Set routes
 app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
+app.use('/api/v1/cinemas', cinemaRouter);
 
 // Exporting the app
 export default app;
