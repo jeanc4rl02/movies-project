@@ -11,7 +11,7 @@ class ExpressCache {
     cache = new NodeCache();
 
     // Create the middleware
-    middleware = (duration) => {
+    setCacheMiddleware = (duration) => {
         return (req, res, next) => {
             // Set the key
             const key = 'express-cache' + req.url + `-${req.method}`;

@@ -10,7 +10,7 @@ const syncDatabase = async () => {
 	// Try to sync the database
 	try {
 		// Sync the database
-		await userModel.sync();
+		await userModel.sync({force: true});
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {
