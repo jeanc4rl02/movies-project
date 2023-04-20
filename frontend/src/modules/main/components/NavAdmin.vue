@@ -41,6 +41,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: "Poppins", sans-serif !important;
+    font-weight: 800;
 }
 
  .exit{
@@ -59,7 +61,7 @@
 }
 #nav a.router-link-exact-active {
     color: #fff;
-    background: #039ae5cf; 
+    background: #039be5; 
     
 }
 

@@ -9,7 +9,9 @@
           <div class="container body" id="registration-form">
             
             <div >
-                 
+                 <slot>
+                    
+                 </slot>
             </div>
           </div>
        </div>
