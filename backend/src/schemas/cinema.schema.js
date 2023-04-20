@@ -20,7 +20,9 @@ const cinemaSchema = joi.object({
     logo: joi.object({
         public_url: joi.string(),
         secure_url: joi.string()
-    })
+    }),
+    limit: joi.number(),
+    offset: joi.number(),
 });
     
 export default cinemaSchema;
