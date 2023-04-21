@@ -5,7 +5,7 @@ import fileUpload from 'express-fileupload';
 
 const router = Router();
 
-/**
+/*
  * @swagger
  * components:
  *  schemas:
@@ -64,14 +64,14 @@ const router = Router();
  *              required: true
 */
 
-/**
+/*
  * @swagger
  *  tags:
  *      name: movies
  *      description: Endpoints of the movie
 */
 
-/**
+/*
  * @swagger
  * /api/v1/movies/:
  *  post:
@@ -99,7 +99,7 @@ const router = Router();
  */
 router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), verifyTokenMiddleware, createmovie)
 
-/**
+/*
 * @swagger
 *  /api/v1/movies:
 *      get:
@@ -121,7 +121,7 @@ router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), v
 * */
 router.get('/', getmovies)
 
-/**
+/*
  * @swagger
  *  /api/v1/movies/{id}:
  *      get:
@@ -144,7 +144,7 @@ router.get('/', getmovies)
  * */
 router.get('/:id', verifyTokenMiddleware, getOnemovie)
 
-/**
+/*
  * @swagger
  *  /api/v1/movies/{id}:
  *      put:
@@ -171,10 +171,9 @@ router.get('/:id', verifyTokenMiddleware, getOnemovie)
  *              404:
  *                  description: There is no movie registered with the provided id.
  */
-
 router.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), verifyTokenMiddleware, updatemovie)
 
-/**
+/*
  * @swagger
  *  /api/v1/movies/{id}:
  *      delete: 

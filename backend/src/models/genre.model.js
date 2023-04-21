@@ -5,22 +5,23 @@
 import cinemaDatabase from '../database/cinema.database.js';
 
 // Import datatypes from sequelize
-import { DataTypes, INTEGER, STRING } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 // Define account model
-const genresModel = cinemaDatabase.define('genre', {
+const genresModel = cinemaDatabase.define('genres', {
     id: {
-        type: INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
     },
     name: {
-        type: STRING,
+        type: DataTypes.STRING,
+        allowNull: false,
     },
 },
     {
         tableName: 'genres',
-        timestamps: false
+        timestamps: true
     });
 
 // Export gender model

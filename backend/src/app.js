@@ -18,6 +18,8 @@ import syncDatabase from './database/sync.database.js';
 import UserRouter from './routes/user.routes.js';
 // Importing the routes
 import cinemaRouter from './routes/cinema.routes.js'
+//Importing the gender router
+import genreRouter from './routes/genre.routes.js';
 
 class App {
 
@@ -33,6 +35,7 @@ class App {
         // Declare paths
         this.docPath = '/api/v1/docs'
         this.cinemaPath = '/api/v1/cinemas';
+        this.genrePath = '/api/v1/genres';
         // Call the methods to configure the app
         this.setMiddlewares();
         // Define routes
@@ -53,6 +56,7 @@ class App {
         this.app.use('/api/v1/users', this.routes.userRoute.getRouter());
         this.app.use(this.docPath, swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use(this.cinemaPath, cinemaRouter);
+        this.app.use(this.genrePath, genreRouter);
     }
     // Set database 
     setDatabase = async() => {

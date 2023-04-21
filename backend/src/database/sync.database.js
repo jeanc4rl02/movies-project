@@ -5,6 +5,7 @@
 // Import the user model
 import userModel from '../models/user.model.js';
 import cinemaModel from '../models/cinema.model.js'
+import genreModel from '../models/genre.model.js';
 
 // Sync the database with the models
 const syncDatabase = async () => {
@@ -13,6 +14,7 @@ const syncDatabase = async () => {
 		// Sync the database
 		await userModel.sync({force: true});
 		await cinemaModel.sync({force:true}); 
+		await genreModel.sync({force: true});
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {
