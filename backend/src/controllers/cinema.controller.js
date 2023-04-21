@@ -35,9 +35,9 @@ export const getOneCinema = async(req, res) => {
 export const createCinema = async (req, res) => {
     const {name, address, city, phone} = req.body;
     const {error, value} = await cinemaSchema.validate(req.body, {abortEarly: false});
-    if(error){
+    if(error || !req.files){
         res.status(400).json({
-            message: error.details[0].message
+            message: error ? error.details[0].message : `Propertie logo cannot be empty.`
         });
     } else {
         try {
