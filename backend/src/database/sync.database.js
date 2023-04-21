@@ -12,7 +12,7 @@ const syncDatabase = async () => {
 	try {
 		// Sync the database
 		await userModel.sync({force: true});
-		await cinemaModel.sync({force:true}); 
+		await cinemaModel.sync(); 
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {
