@@ -4,8 +4,54 @@
 // Importing the joi library
 import Joi from 'joi';
 
-// Create the user schema
-const userSchema = Joi.object({
+// User register schema
+export const userRegisterSchema = Joi.object({
+    name: Joi
+        .string()
+        .min(3)
+        .max(30)
+        .required(),
+    lastName: Joi.
+        string()
+        .min(3)
+        .max(30)
+        .required(),
+    role: Joi
+        .string()
+        .min(3)
+        .max(30)
+        .required(),
+    email: Joi
+        .string()
+        .email()
+        .required(),
+    password: Joi
+        .string()
+        .min(6)
+        .max(30)
+        .required(),
+    phone: Joi
+        .string()
+        .min(6)
+        .max(30)
+        .required()
+});
+
+// User login schema
+export const userLoginSchema = Joi.object({
+    email: Joi
+        .string()
+        .email()
+        .required(),
+    password: Joi
+        .string()
+        .min(6)
+        .max(30)
+        .required()
+});
+
+// Create the user update schema
+export const userUpdateSchema = Joi.object({
     name: Joi
         .string()
         .min(3)
@@ -35,6 +81,19 @@ const userSchema = Joi.object({
         .max(30)
 });
 
-// Export the user schema
-export default userSchema;
+// User id schema
+export const userIdSchema = Joi.object({
+    id: Joi
+        .number()
+        .required()
+});
 
+// User pagination schema
+export const userPaginationSchema = Joi.object({
+    page: Joi
+        .number()
+        .required(),
+    limit: Joi
+        .number()
+        .required()
+});

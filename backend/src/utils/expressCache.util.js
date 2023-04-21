@@ -19,7 +19,7 @@ class ExpressCache {
             const cachedResponse = this.cache.get(key);
             // If the cached body exists, send it
             if (cachedResponse) {
-                res.status(cachedResponse.status).send(cachedResponse.body);
+                res.status(cachedResponse.status).send(JSON.parse(cachedResponse.body));
             } else {
                 // If the cached body doesn't exist, set the response
                 res.sendResponse = res.send;

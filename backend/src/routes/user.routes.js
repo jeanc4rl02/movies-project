@@ -13,10 +13,10 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
 // Create the user router
 class UserRouter {
 
-    // Set the user controller to handle the requests
-    userController = new UserController();
     // Create the router
     router = Router();
+    // Set the user controller to handle the requests
+    userController = new UserController();
     // Create auth util
     authUtil = new AuthUtil();
     // Create express cache util

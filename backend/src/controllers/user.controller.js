@@ -8,8 +8,14 @@ import bcrypt from 'bcrypt';
 import UserService from '../services/user.service.js';
 // Importing auth util
 import AuthUtil from '../utils/auth.util.js';
-// Importing user schema
-import userSchema from '../schemas/user.schema.js';
+// Importing user schemas
+import {
+    userRegisterSchema,
+    userLoginSchema,
+    userUpdateSchema,
+    userIdSchema,
+    userPaginationSchema
+} from '../schemas/user.schema.js';
 
 // Create the user controller
 class UserController {
@@ -26,7 +32,7 @@ class UserController {
             // Get the user data from the request
             const { body: user } = req;
             // Validate the user data
-            await userSchema.validateAsync(user);
+            await userLoginSchema.validateAsync(user);
             // Try to login the user
             try {
                 // Get the user from the body
@@ -98,27 +104,44 @@ class UserController {
     getAllUsers = async (req, res) => {
         // Create a response
         let response;
-        // Try to get all users
+        // Try to validate the pagination data
         try {
             // Get the page and limit from the query
             const { page, limit } = req.query;
-            // Get all users
-            const { data: usersDB } = await this.userService.getAllUsers(page, limit);
-            // Set the response
-            response = {
-                status: 200,
-                message: 'Users found',
-                data: usersDB
+            // Check if the page and limit are defined
+            if(page && limit){
+                // Validate the pagination data
+                await userPaginationSchema.validateAsync({ page, limit });
             }
-        }
-        // If there is an error
+            // Try to get all users
+            try {
+                // Get all users
+                const { data: usersDB } = await this.userService.getAllUsers(page, limit);
+                // Set the response
+                response = {
+                    status: 200,
+                    message: 'Users found',
+                    data: usersDB
+                }
+            }
+            // If there is an error
+            catch (error) {
+                // Log the error
+                console.log(error);
+                // Set the response
+                response = {
+                    status: 500,
+                    message: 'Error getting users',
+                }
+            }
+        } 
+        // Catch the error
         catch (error) {
-            // Log the error
-            console.log(error);
             // Set the response
             response = {
-                status: 500,
-                message: 'Error getting users',
+                status: 400,
+                message: 'Invalid pagination data',
+                data: error.details[0].message
             }
         }
         // Send the response
@@ -133,7 +156,7 @@ class UserController {
             // Get the user data from the request
             const { body: user } = req;
             // Validate the user data
-            await userSchema.validateAsync(user);
+            await userRegisterSchema.validateAsync(user);
             // Try to create the user
             try {
                 // Check if the email already exists
@@ -188,14 +211,16 @@ class UserController {
         let response;
         // Try to validate the user data
         try {
+            // Get the user id from the params
+            const { id } = req.params;
             // Get the user data from the request
             const { body: user } = req;
+            // Validate if the id is a number with Joi
+            await userIdSchema.validateAsync(id);
             // Validate the user data
-            await userSchema.validateAsync(user);
+            await userUpdateSchema.validateAsync(user);
             // Try to update the user
             try {
-                // Get the user id from the params
-                const { id } = req.params;
                 // Check if the user wants to update the password
                 if (user.password) {
                     // Check if the user add the new password
@@ -273,33 +298,49 @@ class UserController {
     deleteUser = async (req, res) => {
         // Create a response
         let response;
-        // Try to delete the user
+        // Try to validate the user id
         try {
             // Get the user id from the params
             const { id } = req.params;
-            // Delete the user
-            await this.userService.deleteUser(id);
-            // Set the response
-            response = {
-                status: 200,
-                message: 'User deleted',
+            // Validate if the id is a number with Joi
+            await userIdSchema.validateAsync(id);
+            // Try to delete the user
+            try {
+                // Get the user id from the params
+                const { id } = req.params;
+                // Delete the user
+                await this.userService.deleteUser(id);
+                // Set the response
+                response = {
+                    status: 200,
+                    message: 'User deleted',
+                }
+            }
+            // If there is an error
+            catch (error) {
+                // Log the error
+                console.log(error);
+                // Set the response
+                response = {
+                    status: 500,
+                    message: 'Error deleting user',
+                }
             }
         }
-        // If there is an error
+        // Catch the error
         catch (error) {
-            // Log the error
-            console.log(error);
             // Set the response
             response = {
-                status: 500,
-                message: 'Error deleting user',
+                status: 400,
+                message: 'Invalid user id',
+                data: error.details[0].message
             }
         }
         // Send the response
         res.status(response.status).send(response);
     }
-
+    
 }
 
-// Export default user controller
+// Export the user controller
 export default UserController;
