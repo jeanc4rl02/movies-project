@@ -21,7 +21,7 @@ import {
 class UserController {
     
     // Set the user service to handle the database
-    userService = new UserService();
+    _userService = new UserService();
 
     // Login method
     login = async (req, res) => {
@@ -38,7 +38,7 @@ class UserController {
                 // Get the user from the body
                 const { email, password } = user;
                 // Login the user
-                const { data: userDB } = await this.userService.getUserByEmail(email);
+                const { data: userDB } = await this._userService.getUserByEmail(email);
                 // Check if the user exists
                 if (!userDB) {
                     // Set the response
@@ -116,7 +116,7 @@ class UserController {
             // Try to get all users
             try {
                 // Get all users
-                const { data: usersDB } = await this.userService.getAllUsers(page, limit);
+                const { data: usersDB } = await this._userService.getAllUsers(page, limit);
                 // Set the response
                 response = {
                     status: 200,
@@ -160,7 +160,7 @@ class UserController {
             // Try to create the user
             try {
                 // Check if the email already exists
-                const { data: userDB } = await this.userService.getUserByEmail(user.email);
+                const { data: userDB } = await this._userService.getUserByEmail(user.email);
                 // Check if the user exists
                 if (userDB) {
                     // Set the response
@@ -174,7 +174,7 @@ class UserController {
                     // Hash the password
                     user.password = await bcrypt.hash(user.password, 10);
                     // Create the user
-                    await this.userService.createUser(user);
+                    await this._userService.createUser(user);
                     // Set the response
                     response = {
                         status: 201,
@@ -215,8 +215,6 @@ class UserController {
             const { id } = req.params;
             // Get the user data from the request
             const { body: user } = req;
-            // Validate if the id is a number with Joi
-            await userIdSchema.validateAsync(id);
             // Validate the user data
             await userUpdateSchema.validateAsync(user);
             // Try to update the user
@@ -226,7 +224,7 @@ class UserController {
                     // Check if the user add the new password
                     if (user.newPassword) {
                         // Get the user the database
-                        const { data: userDB } = await this.userService.getUserById(id);
+                        const { data: userDB } = await this._userService.getUserById(id);
                         // Get the password from the user
                         const { password } = userDB;
                         // Check if the password is the same with bcrypt
@@ -269,7 +267,7 @@ class UserController {
                     }
                 }
                 // Update the user
-                response.status === 200 && await this.userService.updateUser(id, user);
+                response.status === 200 && await this._userService.updateUser(id, user);
             }
             // If there is an error
             catch (error) {
@@ -298,42 +296,26 @@ class UserController {
     deleteUser = async (req, res) => {
         // Create a response
         let response;
-        // Try to validate the user id
+        // Get the user id from the params
+        const { id } = req.params;
+        // Try to delete the user
         try {
-            // Get the user id from the params
-            const { id } = req.params;
-            // Validate if the id is a number with Joi
-            await userIdSchema.validateAsync(id);
-            // Try to delete the user
-            try {
-                // Get the user id from the params
-                const { id } = req.params;
-                // Delete the user
-                await this.userService.deleteUser(id);
-                // Set the response
-                response = {
-                    status: 200,
-                    message: 'User deleted',
-                }
-            }
-            // If there is an error
-            catch (error) {
-                // Log the error
-                console.log(error);
-                // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error deleting user',
-                }
-            }
-        }
-        // Catch the error
-        catch (error) {
+            // Delete the user
+            await this._userService.deleteUser(id);
             // Set the response
             response = {
-                status: 400,
-                message: 'Invalid user id',
-                data: error.details[0].message
+                status: 200,
+                message: 'User deleted',
+            }
+        }
+        // If there is an error
+        catch (error) {
+            // Log the error
+            console.log(error);
+            // Set the response
+            response = {
+                status: 500,
+                message: 'Error deleting user',
             }
         }
         // Send the response

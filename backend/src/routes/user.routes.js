@@ -14,44 +14,54 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
 class UserRouter {
 
     // Create the router
-    router = Router();
+    _router = Router();
     // Set the user controller to handle the requests
-    userController = new UserController();
+    _userController = new UserController();
     // Create auth util
-    authUtil = new AuthUtil();
+    _authUtil = new AuthUtil();
     // Create express cache util
-    expressCacheUtil = new ExpressCacheUtil();
+    _expressCacheUtil = new ExpressCacheUtil();
 
     // Constructor to set the routes
     constructor() {
+        // Set the routes
+        this._setRoutes();
+    }
+    
+    // Set the routes
+    _setRoutes = () => {
         // Login route
-        this.router.post('/login', this.userController.login);
+        this._router.post('/login', this._userController.login);
         // Create user route
-        this.router.post('/', this.userController.createUser);
+        this._router.post('/', this._userController.createUser);
         // Get all users route
-        this.router.get(
+        this._router.get(
             '/', 
-            this.authUtil.verifyTokenMiddleware,
-            this.authUtil.validateRoleMiddleware(['administrator']),
-            this.expressCacheUtil.setCacheMiddleware(20),
-            this.userController.getAllUsers,
+            this._authUtil.verifyTokenMiddleware,
+            this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.setCacheMiddleware(20),
+            this._userController.getAllUsers,
         );
         // Update user route
-        this.router.put(
+        this._router.put(
             '/:id', 
-            this.authUtil.verifyTokenMiddleware,
-            this.authUtil.validateRoleMiddleware(['administrator']),
-            this.userController.updateUser
+            this._authUtil.verifyTokenMiddleware,
+            this._authUtil.validateRoleMiddleware(['administrator']),
+            this._userController.updateUser
         );
         // Delete user route
-        this.router.delete(
+        this._router.delete(
             '/:id', 
-            this.authUtil.verifyTokenMiddleware,
-            this.authUtil.validateRoleMiddleware(['administrator']),
-            this.userController.deleteUser
+            this._authUtil.verifyTokenMiddleware,
+            this._authUtil.validateRoleMiddleware(['administrator']),
+            this._userController.deleteUser
         );
     }
-
+    
+    // Get the router
+    getRouter = () => {
+        return this._router;
+    }
 }
 
 // Export the user router

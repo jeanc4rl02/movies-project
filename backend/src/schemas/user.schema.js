@@ -81,10 +81,10 @@ export const userUpdateSchema = Joi.object({
         .max(30)
 });
 
-// User id schema
 export const userIdSchema = Joi.object({
     id: Joi
         .number()
+        .integer()
         .required()
 });
 

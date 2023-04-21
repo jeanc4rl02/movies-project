@@ -50,7 +50,7 @@ class App {
     // The routes method
     setRoutes = () => {
         this.app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
-        this.app.use('/api/v1/users', this.routes.userRoute.router);
+        this.app.use('/api/v1/users', this.routes.userRoute.getRouter());
         this.app.use(this.docPath, swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use(this.cinemaPath, cinemaRouter);
     }

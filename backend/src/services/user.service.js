@@ -8,7 +8,7 @@ import UserModel from '../models/user.model.js';
 class UserService {
     
     // Set the user model to handle the database
-    userModel = UserModel;
+    _userModel = UserModel;
 
     // Get all users method
     getAllUsers = async (page, limit) => {
@@ -20,7 +20,7 @@ class UserService {
                 // Set the pagination variables
                 const offset = (page - 1) * limit;
                 // Get all users from the database
-                const usersDB = await this.userModel.findAll({
+                const usersDB = await this._userModel.findAll({
                     attributes: {
                         exclude: ['password']
                     },
@@ -29,7 +29,7 @@ class UserService {
                     order: [['createdAt', 'DESC']],
                 });
                 // Set the total of users
-                const totalUsers = await this.userModel.count();
+                const totalUsers = await this._userModel.count();
                 // Set the total of pages
                 const totalPages = Math.ceil(totalUsers / limit);
                 // Create the response
@@ -46,7 +46,7 @@ class UserService {
             // If the page and limit are not 0
             else {
                 // Get all users from the database
-                const usersDB = await this.userModel.findAll({
+                const usersDB = await this._userModel.findAll({
                     attributes: {
                         exclude: ['password']
                     },
@@ -80,7 +80,7 @@ class UserService {
         // Try to create the user
         try {
             // Get the user from the database
-            const userDB = await this.userModel.findByPk(id);
+            const userDB = await this._userModel.findByPk(id);
             // Create the response
             response = {
                 status: 200,
@@ -108,7 +108,7 @@ class UserService {
         // Try to create the user
         try {
             // Get the user from the database
-            const userDB = await this.userModel.findOne({
+            const userDB = await this._userModel.findOne({
                 where: {
                     email
                 },
@@ -140,7 +140,7 @@ class UserService {
         // Try to create the user
         try {
             // Create the user in the database
-            await this.userModel.create(user);
+            await this._userModel.create(user);
             // Create the response
             response = {
                 status: 201,
@@ -166,7 +166,7 @@ class UserService {
         let response;
         // Try to update the user
         try {
-            await this.userModel.update(user, {
+            await this._userModel.update(user, {
                 where: {
                     id: id
                 }
@@ -196,7 +196,7 @@ class UserService {
         let response;
         // Try to delete the user
         try {
-            await this.userModel.destroy({
+            await this._userModel.destroy({
                 where: {
                     id: id
                 }
