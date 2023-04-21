@@ -16,6 +16,8 @@ import testDatabase from './database/test.database.js';
 import syncDatabase from './database/sync.database.js';
 // Importing the user router
 import UserRouter from './routes/user.routes.js';
+// Importing the routes
+import cinemaRouter from './routes/cinema.routes.js'
 
 class App {
 
@@ -28,9 +30,15 @@ class App {
     constructor() {
         // Declare and initialize the express app
         this.app = express();
+        // Declare paths
+        this.docPath = '/api/v1/docs'
+        this.cinemaPath = '/api/v1/cinemas';
         // Call the methods to configure the app
         this.setMiddlewares();
+        // Define routes
         this.setRoutes();
+        
+        // Set database
         this.setDatabase();
     }
     // The middlewares method
@@ -43,6 +51,8 @@ class App {
     setRoutes = () => {
         this.app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use('/api/v1/users', this.routes.userRoute.router);
+        this.app.use(this.docPath, swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
+        this.app.use(this.cinemaPath, cinemaRouter);
     }
     // Set database 
     setDatabase = async() => {
