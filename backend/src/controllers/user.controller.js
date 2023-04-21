@@ -13,7 +13,6 @@ import {
     userRegisterSchema,
     userLoginSchema,
     userUpdateSchema,
-    userIdSchema,
     userPaginationSchema
 } from '../schemas/user.schema.js';
 
