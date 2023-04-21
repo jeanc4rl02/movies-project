@@ -232,7 +232,7 @@ cineRouter.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads
  *                  content:
  *                      application/json:
  *                          schema:
- *                              $ref: '#/components/schemas/cinema'
+ *                              $ref: '#/components/schemas/Cinema'
  *              500:
  *                  description: Server error.
  *              404:
