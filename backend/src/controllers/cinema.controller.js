@@ -2,10 +2,14 @@ import cinemaModel from '../models/cinema.model.js';
 import cinemaSchema from '../schemas/cinema.schema.js';
 import {uploadImage, deleteImage} from '../config/cloudinary.config.js';
 import fs from 'fs-extra';
+import paginationSchema from '../schemas/pagination.schema.js';
 
 export const getAllCinemas = async(req, res) => {
-    const {page = 1, limit} = req.query;
-    const cinemas = await cinemaModel.findAll()
+    let cinemas;
+    const {limit, offset} = req.query;
+    const {error, value} = await paginationSchema.validate(req.query, {abortEarly: false});
+    error ? cinemas = await cinemaModel.findAll() 
+    : cinemas = await cinemaModel.findAll({offset, limit});
     cinemas.length != 0 ? 
     res.send({
         message: 'Successful request',
@@ -31,9 +35,9 @@ export const getOneCinema = async(req, res) => {
 export const createCinema = async (req, res) => {
     const {name, address, city, phone} = req.body;
     const {error, value} = await cinemaSchema.validate(req.body, {abortEarly: false});
-    if(error){
+    if(error || !req.files){
         res.status(400).json({
-            message: error.details[0].message
+            message: error ? error.details[0].message : `Propertie logo cannot be empty.`
         });
     } else {
         try {
