@@ -26,6 +26,7 @@
   "homepage": "https://github.com/jeanc4rl02/movies-project#readme",
   "dependencies": {
     "api-cache": "^0.1.1",
+    "apicache": "^1.6.3",
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.36.1",
     "cors": "^2.8.5",

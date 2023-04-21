@@ -4,7 +4,7 @@
 // Import the swagger-jsdoc
 import swaggerJsDoc from 'swagger-jsdoc';
 // Import the port and production url from the environment variables
-import { PORT } from './env.config.js';
+import { PORT, PRODUCTION_URL } from './env.config.js';
 
 // Create the swagger options
 const swaggerOptions = {
@@ -20,10 +20,10 @@ const swaggerOptions = {
                 url: `http://localhost:${PORT || 3000}` ,
                 description: 'Development server'
             },
-            // {
-            //     url: `${PRODUCTION_URL}`,
-            //     description: 'Production server'
-            // }
+            {
+                url: `${PRODUCTION_URL}`,
+                description: 'Production server'
+            }
         ],
     },
     apis: [ './src/routes/*.js' ],
