@@ -3,7 +3,6 @@
 
 // Import bcrypt
 import bcrypt from 'bcrypt';
-
 // Importing user service
 import UserService from '../services/user.service.js';
 // Importing auth util
@@ -38,14 +37,11 @@ class UserController {
                 // Get the user from the body
                 const { email, password } = user;
                 // Login the user
-                const { data: userDB } = await this._userService.getUserByEmail(email);
+                const userDB = await this._userService.getUserByEmail(email);
                 // Check if the user exists
                 if (!userDB) {
                     // Set the response
-                    response = {
-                        status: 404,
-                        message: 'User not found',
-                    }
+                    response = { status: 404, message: 'User not found' }
                 }
                 // If the user exists
                 else {
@@ -61,19 +57,12 @@ class UserController {
                             email: userDB.email
                         });
                         // Set the response
-                        response = {
-                            status: 200,
-                            message: 'User logged in',
-                            data: { token }
-                        }
+                        response = { status: 200, message: 'User logged in', data: { token } }
                     }
                     // If the password is incorrect
                     else {
                         // Set the response
-                        response = {
-                            status: 401,
-                            message: 'Incorrect password',
-                        }
+                        response = { status: 401, message: 'Incorrect password' }
                     }
                 }
             }
@@ -82,20 +71,13 @@ class UserController {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error logging in user',
-                }
+                response = { status: 500, message: 'Error logging in user' }
             }
         }
         // Catch the error
         catch (error) {
             // Set the response
-            response = {
-                status: 400,
-                message: 'Invalid user data',
-                data: error.details[0].message
-            }
+            response = { status: 400, message: 'Invalid user data', data: error.details[0].message }
         }
         // Send the response
         res.status(response.status).send(response);
@@ -108,41 +90,27 @@ class UserController {
         try {
             // Get the page and limit from the query
             const { page, limit } = req.query;
-            // Check if the page and limit are defined
-            if(page && limit){
-                // Validate the pagination data
-                await paginationSchema.validateAsync({ page, limit });
-            }
+            // Check if the page and limit are defined to validate the pagination data
+            if(page && limit) await paginationSchema.validateAsync({ page, limit });
             // Try to get all users
             try {
                 // Get all users
-                const { data: usersDB } = await this._userService.getAllUsers(page, limit);
+                const usersDB = await this._userService.getAllUsers(page, limit);
                 // Set the response
-                response = {
-                    status: 200,
-                    message: 'Users found',
-                    data: usersDB
-                }
+                response = { status: 200, message: 'Users found', data: usersDB }
             }
             // If there is an error
             catch (error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error getting users',
-                }
+                response = { status: 500, message: 'Error getting users' }
             }
         } 
         // Catch the error
         catch (error) {
             // Set the response
-            response = {
-                status: 400,
-                message: 'Invalid pagination data',
-                data: error.details[0].message
-            }
+            response = { status: 400, message: 'Invalid pagination data', data: error.details[0].message }
         }
         // Send the response
         res.status(response.status).send(response);
@@ -154,32 +122,23 @@ class UserController {
         // Try to validate the user data
         try {
             // Get the user data from the request
-            const { body: user } = req;
+            const { body: userData } = req;
             // Validate the user data
-            await userRegisterSchema.validateAsync(user);
+            await userRegisterSchema.validateAsync(userData);
             // Try to create the user
             try {
                 // Check if the email already exists
-                const { data: userDB } = await this._userService.getUserByEmail(user.email);
-                // Check if the user exists
-                if (userDB) {
-                    // Set the response
-                    response = {
-                        status: 409,
-                        message: 'User already exists',
-                    }
-                }
+                const userDB = await this._userService.getUserByEmail(userData.email);
+                // Check if the user exists and set the response
+                if (userDB) response = { status: 409, message: 'User already exists' }
                 // If the user doesn't exist
                 else {
                     // Hash the password
-                    user.password = await bcrypt.hash(user.password, 10);
+                    userData.password = await bcrypt.hash(userData.password, 10);
                     // Create the user
-                    await this._userService.createUser(user);
+                    const user = await this._userService.createUser(userData);
                     // Set the response
-                    response = {
-                        status: 201,
-                        message: 'User created',
-                    }
+                    response = { status: 201, message: 'User created', data: user }
                 }
             }
             // If there is an error
@@ -187,20 +146,13 @@ class UserController {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error creating user',
-                }
+                response = { status: 500, message: 'Error creating user' }
             }
         }
         // Catch the error
         catch (error) {
             // Set the response
-            response = {
-                status: 400,
-                message: 'Invalid user data',
-                data: error.details[0].message
-            }
+            response = { status: 400, message: 'Invalid user data', data: error.details[0].message }
         }
         // Send the response
         res.status(response.status).send(response);
@@ -214,80 +166,65 @@ class UserController {
             // Get the user id from the params
             const { id } = req.params;
             // Get the user data from the request
-            const { body: user } = req;
+            const { body: userData } = req;
             // Validate the user data
-            await userUpdateSchema.validateAsync(user);
+            await userUpdateSchema.validateAsync(userData);
             // Try to update the user
             try {
                 // Check if the user wants to update the password
-                if (user.password) {
+                if (userData.password) {
                     // Check if the user add the new password
-                    if (user.newPassword) {
+                    if (userData.newPassword) {
                         // Get the user the database
-                        const { data: userDB } = await this._userService.getUserById(id);
+                        const userDB = await this._userService.getUserById(id);
                         // Get the password from the user
                         const { password } = userDB;
                         // Check if the password is the same with bcrypt
-                        const isPasswordCorrect = await bcrypt.compare(user.password, password);
+                        const isPasswordCorrect = await bcrypt.compare(userData.password, password);
                         // Check if the password is correct
                         if (isPasswordCorrect) {
                             // Set the new password
-                            user.password = await bcrypt.hash(user.newPassword, 10);
+                            userData.password = await bcrypt.hash(userData.newPassword, 10);
                             // Set the response
-                            response = {
-                                status: 200,
-                                message: 'User password updated',
-                            }
+                            response = { status: 200, message: 'User password updated' }
                         }
                         // If the password is incorrect
                         else {
                             // Set the response
-                            response = {
-                                status: 401,
-                                message: 'Incorrect password',
-                            }
+                            response = { status: 401, message: 'Incorrect password' }
                         }
                     }
                     // If the user doesn't add the new password
                     else {
                         // Set the response
-                        response = {
-                            status: 401,
-                            message: 'You must add the new password'
-                        }
+                        response = { status: 401, message: 'You must add the new password' }
                     }
                     
                 }
                 // If the user doesn't want to update the password
                 else {
                     // Set the response
-                    response = {
-                        status: 200,
-                        message: 'User updated',
-                    }
+                    response = { status: 200, message: 'User updated' }
                 }
-                // Update the user
-                response.status === 200 && await this._userService.updateUser(id, user);
+                // Update the user if the response is accord to a valid process
+                if (response.status === 200) {
+                    const user = await this._userService.updateUser(id, userData);
+                    // Set the response
+                    response = {...response, data: user}
+                }
             }
             // If there is an error
             catch (error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error updating user',
-                }
+                response = { status: 500, message: 'Error updating user' }
             }
         }
         // Catch the error
         catch (error) {
             // Set the response
-            response = {
-                status: 400,
-                message: 'Invalid user data',
-                data: error.details[0].message
-            }
+            response = { status: 400, message: 'Invalid user data', data: error.details[0].message }
         }
         // Send the response
         res.status(response.status).send(response);
@@ -303,20 +240,14 @@ class UserController {
             // Delete the user
             await this._userService.deleteUser(id);
             // Set the response
-            response = {
-                status: 200,
-                message: 'User deleted',
-            }
+            response = { status: 200, message: 'User deleted' }
         }
         // If there is an error
         catch (error) {
             // Log the error
             console.log(error);
             // Set the response
-            response = {
-                status: 500,
-                message: 'Error deleting user',
-            }
+            response = { status: 500, message: 'Error deleting user' }
         }
         // Send the response
         res.status(response.status).send(response);
