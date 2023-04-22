@@ -25,11 +25,11 @@ class UserRouter {
     // Constructor to set the routes
     constructor() {
         // Set the routes
-        this._setRoutes();
+        this._setRouter();
     }
     
     // Set the routes
-    _setRoutes = () => {
+    _setRouter = () => {
         // Login route
         this._router.post('/login', this._userController.login);
         // Create user route
@@ -59,7 +59,8 @@ class UserRouter {
     }
     
     // Get the router
-    getRouter = () => {
+    get router() {
+        // Return the router
         return this._router;
     }
 }

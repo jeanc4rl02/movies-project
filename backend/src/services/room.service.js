@@ -3,12 +3,16 @@
 
 // Importing the room model
 import roomModel from '../models/room.model.js';
+// Importing the cinema model
+import cinemaModel from '../models/cinema.model.js';
 
 // Create the room services class
 class RoomService {
 
     // Room model instance
     _roomModel = roomModel;
+    // Cinema model instance
+    _cinemaModel = cinemaModel;
 
     // Method to get all rooms
     getAllRooms = async(page, limit) => {
@@ -21,15 +25,15 @@ class RoomService {
                 const offset = (page - 1) * limit;
                 // Get all rooms
                 const rooms = await this._roomModel.findAll({
-                    attributes: {
-                        exclude: ['cinemaId'],
-                    },
                     include: [
                         {
-                            model: cinemaModel,
+                            model: this._cinemaModel,
                             as: 'cinema',
                         },
                     ],
+                    attributes: {
+                        exclude: ['cinemaId'],
+                    },
                     limit,
                     offset,
                     order: [['createdAt', 'DESC']],
@@ -84,6 +88,85 @@ class RoomService {
         // Return the response
         return response;
     }
+    // Method to get a rooms by cinema id
+    getRoomsByCinema = async(cinemaId, page, limit) => {
+        // Create a response
+        let response;
+        // Try to get a rooms by cinema id
+        try {
+            // Check if the page and limit are defined
+            if (page && limit) {
+                // Set the pagination variables
+                const offset = (page - 1) * limit;
+                // Get a rooms by cinema id
+                const roomsDB = await this._roomModel.findAll({
+                    where: { cinemaId },
+                    include: [
+                        {
+                            model: this._cinemaModel,
+                            as: 'cinema',
+                        },
+                    ],
+                    attributes: {
+                        exclude: ['cinemaId'],
+                    },
+                    limit,
+                    offset,
+                    order: [['createdAt', 'DESC']],
+                });
+                // Set the total of rooms
+                const totalRooms = await this._roomModel.count({
+                    where: { cinemaId },
+                });
+                // Set the total of pages
+                const totalPages = Math.ceil(totalRooms / limit);
+                // Create the response
+                response = {
+                    status: 200,
+                    message: 'Rooms found',
+                    data: {
+                        rooms: roomsDB,
+                        totalRooms,
+                        totalPages,
+                    },
+                };
+            }
+            // If the page and limit aren't defined
+            else{
+                // Get a rooms by cinema id
+                const roomsDB = await this._roomModel.findAll({
+                    where: { cinemaId },
+                    include: [
+                        {
+                            model: this._cinemaModel,
+                            as: 'cinema',
+                        },
+                    ],
+                    attributes: {
+                        exclude: ['cinemaId'],
+                    },
+                });
+                // Create the response
+                response = {
+                    status: 200,
+                    message: 'Rooms found',
+                    data: roomsDB,
+                };
+            }
+        }
+        // Catch the error
+        catch (error) {
+            // Create the response
+            response = {
+                status: 500,
+                message: 'Rooms not found',
+            };
+            // Throw the error
+            throw error;
+        }
+        // Return the response
+        return response;
+    }
     // Method to get a room by id
     getRoomById = async(id) => {
         // Create a response
@@ -92,15 +175,15 @@ class RoomService {
         try {
             // Get a room by id
             const room = await this._roomModel.findByPk(id, {
-                attributes: {
-                    exclude: ['cinemaId'],
-                },
                 include: [
                     {
-                        model: cinemaModel,
+                        model: this._cinemaModel,
                         as: 'cinema',
                     },
                 ],
+                attributes: {
+                    exclude: ['cinemaId'],
+                },
             });
             // Create the response
             response = {

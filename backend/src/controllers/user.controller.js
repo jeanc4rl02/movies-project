@@ -8,12 +8,13 @@ import bcrypt from 'bcrypt';
 import UserService from '../services/user.service.js';
 // Importing auth util
 import AuthUtil from '../utils/auth.util.js';
+// Import pagination schema
+import paginationSchema from '../schemas/pagination.schema.js';
 // Importing user schemas
 import {
     userRegisterSchema,
     userLoginSchema,
-    userUpdateSchema,
-    userPaginationSchema
+    userUpdateSchema
 } from '../schemas/user.schema.js';
 
 // Create the user controller
@@ -110,7 +111,7 @@ class UserController {
             // Check if the page and limit are defined
             if(page && limit){
                 // Validate the pagination data
-                await userPaginationSchema.validateAsync({ page, limit });
+                await paginationSchema.validateAsync({ page, limit });
             }
             // Try to get all users
             try {

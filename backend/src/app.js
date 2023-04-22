@@ -16,20 +16,23 @@ import testDatabase from './database/test.database.js';
 import syncDatabase from './database/sync.database.js';
 // Importing the user router
 import UserRouter from './routes/user.routes.js';
+// Importing the room router
+import RoomRouter from './routes/room.routes.js';
 // Importing the routes
 import cinemaRouter from './routes/cinema.routes.js'
 
 class App {
 
     // The app properties
+    app = express();
+    // Routes
     routes = {
         userRoute: new UserRouter(),
+        roomRoute: new RoomRouter()
     }
 
     // The constructor method
     constructor() {
-        // Declare and initialize the express app
-        this.app = express();
         // Declare paths
         this.docPath = '/api/v1/docs'
         this.cinemaPath = '/api/v1/cinemas';
@@ -37,7 +40,6 @@ class App {
         this.setMiddlewares();
         // Define routes
         this.setRoutes();
-        
         // Set database
         this.setDatabase();
     }
@@ -50,7 +52,8 @@ class App {
     // The routes method
     setRoutes = () => {
         this.app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
-        this.app.use('/api/v1/users', this.routes.userRoute.getRouter());
+        this.app.use('/api/v1/users', this.routes.userRoute.router);
+        this.app.use('/api/v1/rooms', this.routes.roomRoute.router);
         this.app.use(this.docPath, swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use(this.cinemaPath, cinemaRouter);
     }

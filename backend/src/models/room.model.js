@@ -4,7 +4,9 @@
 // Importing the sequelize library
 import { DataTypes } from 'sequelize';
 // Importing the database connection
-import cinemaDatabase from '../database/cinema.database';
+import cinemaDatabase from '../database/cinema.database.js';
+// Importing the cinema model
+import cinemaModel from './cinema.model.js';
 
 // Creating the room model
 const roomModel = cinemaDatabase.define('Room', {
@@ -36,6 +38,7 @@ const roomModel = cinemaDatabase.define('Room', {
 roomModel.belongsTo(cinemaModel, { 
     foreignKey: 'cinemaId',
     field: 'cinema_id',
+    targetKey: 'id',
     as: 'cinema'
 });
 
