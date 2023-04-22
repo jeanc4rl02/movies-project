@@ -5,7 +5,7 @@
 import cinemaDatabase from '../database/cinema.database.js';
 
 // Import datatypes from sequelize
-import { DataTypes, INTEGER, STRING } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 // Define account model
 const moviesModel = cinemaDatabase.define('movie', {
@@ -33,7 +33,7 @@ const moviesModel = cinemaDatabase.define('movie', {
 },
     {
         tableName: 'movies',
-        timestamps: false
+        timestamps: true
     });
 
 // Export gender model

@@ -1,6 +1,10 @@
 import moviesSchema from '../schemas/movie.schema.js';
 import moviesModel from '../models/movie.model.js';
 
+import { uploadImage, deleteImage } from '../config/cloudinary.config.js';
+import fs from 'fs-extra';
+import paginationSchema from '../schemas/pagination.schema.js';
+
 export const createmovies = async (req, res) => {
     const { name, duration, trailer, image } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
@@ -10,15 +14,11 @@ export const createmovies = async (req, res) => {
         });
     } else {
         if (name == null || duration == null ||
-            trailer == null || image == null) {
+            trailer == null) {
             res.status(400).json({
                 message: 'field incomplete.'
             });
         } else {
-            const newmovies = await moviesModel.create({
-                name, duration, trailer, image,
-            });
-            res.status(201).json(newmovies)
             try {
                 const newmovie = {
                     name, duration, trailer, image: {}
@@ -31,7 +31,7 @@ export const createmovies = async (req, res) => {
                     }
                 }
                 await moviesModel.create(newmovie);
-                await fs.unlink(req.files.image.tempFilePath)
+                await fs.unlink(req.files.image.tempFilePath);
                 res.status(201).json({
                     message: 'Successful request',
                     body: newmovie
@@ -45,30 +45,38 @@ export const createmovies = async (req, res) => {
 }
 
 export const getmovies = async (req, res) => {
-    const { page = 1, limit } = req.query;
-    const movies = await moviesModel.findAll()
-    movies.length != 0 ? res.send({
-        message: 'Successful request',
-        body: movies
-    }) : res.status(404).json({
-        message: 'At the moment we have no movies to show. Please create one before using this request.'
-    });
+    let movies;
+    const { limit, offset } = req.query;
+    const { error, value } = await paginationSchema.validate(req.query, { abortEarly: false });
+
+    (error) ?
+        movies = await moviesModel.findAll() :
+        movies = await moviesModel.findAll({ offset, limit });
+    (movies.length != 0) ?
+        res.send({
+            message: 'Successful request',
+            body: movies
+        }) :
+        res.status(404).json({
+            message: 'At the moment we have no movies to show. Please create one before using this request.'
+        });
 }
 
 export const getOnemovies = async (req, res) => {
-    const { id } = req.params
-    const movies = await moviesModel.findByPk(id)
-    movies ? res.send({
-        message: 'Successful request',
-        body: movies
-    }) : res.status(404).json({
-        message: `At the moment we have no movie with id: ${id} to show. Please make sure that the provided id exists in the database.`
-    });
+    const { id } = req.params;
+    const movies = await moviesModel.findByPk(id);
+    (movies) ?
+        res.send({
+            message: 'Successful request',
+            body: movies
+        }) : res.status(404).json({
+            message: `At the moment we have no movie with id: ${id} to show. Please make sure that the provided id exists in the database.`
+        });
 }
 
 export const updatemovies = async (req, res) => {
-    const { id } = req.params
-    const moviesToUpdate = await moviesModel.findByPk(id)
+    const { id } = req.params;
+    const moviesToUpdate = await moviesModel.findByPk(id);
     if (moviesToUpdate) {
         try {
             const { name, duration, trailer } = req.body;
@@ -103,12 +111,12 @@ export const updatemovies = async (req, res) => {
 }
 
 export const deletemovies = async (req, res) => {
-    const { id } = req.params
-    const moviesToDelete = await moviesModel.findByPk(id)
+    const { id } = req.params;
+    const moviesToDelete = await moviesModel.findByPk(id);
 
     if (moviesToDelete) {
         try {
-            await deleteImage(cinemaToDelete.image.public_id);
+            await deleteImage(moviesToDelete.image.public_id);
             await moviesModel.destroy({
                 where: { id }
             })

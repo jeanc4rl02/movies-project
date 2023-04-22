@@ -1,9 +1,10 @@
 import {Router} from 'express';
-import { createmovie, getmovies, getOnemovie, updatemovie, deletemovie } from '../controllers/movie.controller.js';
-import verifyTokenMiddleware from '../middlewares/verifyToken.middleware.js';
+import { createmovies, getmovies, getOnemovies, updatemovies, deletemovies } from '../controllers/movie.controller.js';
 import fileUpload from 'express-fileupload';
+import apicache from 'apicache';
 
 const router = Router();
+const cache = apicache.middleware;
 
 /*
  * @swagger
@@ -97,7 +98,7 @@ const router = Router();
  *      400: 
  *        description: There are no registered movies
  */
-router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), verifyTokenMiddleware, createmovie)
+router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), createmovies)
 
 /*
 * @swagger
@@ -119,7 +120,7 @@ router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), v
 *              404:
 *                  description: the list of movies is empty
 * */
-router.get('/', getmovies)
+router.get('/', cache('2 minutes'), getmovies)
 
 /*
  * @swagger
@@ -142,7 +143,7 @@ router.get('/', getmovies)
  *              404:
  *                  description: The id provided doesn't exist in the database.
  * */
-router.get('/:id', verifyTokenMiddleware, getOnemovie)
+router.get('/:id', cache('1 minutes'), getOnemovies)
 
 /*
  * @swagger
@@ -171,7 +172,7 @@ router.get('/:id', verifyTokenMiddleware, getOnemovie)
  *              404:
  *                  description: There is no movie registered with the provided id.
  */
-router.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), verifyTokenMiddleware, updatemovie)
+router.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), updatemovies)
 
 /*
  * @swagger
@@ -195,6 +196,6 @@ router.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads'}),
  *                  description: There is no movie registered with the provided id.
  */
 
-router.delete('/:id', verifyTokenMiddleware, deletemovie)
+router.delete('/:id', deletemovies)
 
 export default router;
