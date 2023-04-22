@@ -6,131 +6,158 @@ import apicache from 'apicache';
 const router = Router();
 const cache = apicache.middleware;
 
-/*
+/**
  * @swagger
  * components:
  *  schemas:
- *      movies:
+ *      movie:
  *          type: object
  *          properties:
  *              id:
  *                  type: integer
- *                  description: auto-generated id of gender.
+ *                  description: auto-generated id of the movie.
  *              name:
- *                  type: integer
- *                  description: name of the gender
- *              duration:
  *                  type: string
- *                  description: duration of the film
+ *                  description: name of the movie.
+ *              duration: 
+ *                  type: string
+ *                  description: duration of the movie.
  *              trailer:
  *                  type: string
- *                  description: trailer of the film
+ *                  description: trailer of the movie.
  *              image:
- *                  type: string
- *                  description: image-logo of the film
- * 
+ *                  type: file
+ *                  description: image of the movie.
  *          required: 
  *              - name
- *              - duration
  *              - trailer
- *              - image
- *              
+ *              - duration
  *          example:
- *             name: 'Power Rangers'
- *             duration: '1:20'
- *             trailer: ''
- *             image: ''
- *      moviesNotFound:
+ *              id: 1
+ *              name: Mario
+ *              duration: 1h 23min
+ *              trailer: enlace
+ *              image: (file)
+ *      Empty:
  *          type: object
- *          properties: 
- *              msg: 
- *              type: string
- *              description: not found movies
+ *          properties:
+ *              message: string
  *          example:
- *              msg: not found movies
+ *              message: At the moment we have no movies to show. Please create one before using this request.
+ *      EmptyPost:
+ *          type: object
+ *          properties:
+ *              message: string
+ *          example:
+ *              message:"name" is required
+ *      EmptyPut:
+ *          type: object
+ *          properties:
+ *              message: string
+ *          example:notNull Violation: movie.duration cannot be null
+ *      noDataPut:
+ *          type: object
+ *          properties:
+ *              message: string
+ *          example:At the moment we have no movie with id: 4 to show. Please make sure that the provided id exists in the database.
  *  parameters:
- *      moviesId:
+ *      movieId:
  *          in: path
  *          name: id
  *          required: true
  *          schema:
- *              type: string
- *              description: Id of the movie Detail.
- *      token:
- *          in: header
- *          name: x-access-token
- *          description: The token to access the API
+ *              type: number
+ *          description: Id of the movie.
+ *      offset:
+ *          in: path
+ *          name: offset
+ *          required: false
  *          schema:
- *              type: string
- *              required: true
-*/
-
-/*
- * @swagger
- *  tags:
- *      name: movies
- *      description: Endpoints of the movie
-*/
-
-/*
- * @swagger
- * /api/v1/movies/:
- *  post:
- *      summary: create a new movies
- *      tags: [movies]
- *      parameters: 
- *          - $ref: '#/components/parameters/token'  
- *      requestBody:
- *          required: true
- *      content:
- *          application/json:
+ *              type: number
+ *          description: The number of movies to skip before starting to collect the result set.
+ *      limit:
+ *          in: path
+ *          name: limit
+ *          required: false
  *          schema:
- *              items: 
- *                  $ref: '#/components/schemas/movies'   
- *      responses:
- *          200:
- *              description: The movies was successfully created
- *              content:
- *                  application/json:
- *                      schema: 
- *                          items: 
- *                              $ref: '#/components/schemas/movies' 
- *      400: 
- *        description: There are no registered movies
+ *              type: number
+ *          description: The numbers of movies to return.
  */
+
+/**
+ * @swagger
+ * tags:
+ *  name: movies
+ *  description: Endpoints of the movie.
+ */
+
+/**
+ * @swagger
+ *  /api/v1/movies:
+ *      post:
+ *          summary: Save a new movie.
+ *          tags: [movies]
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/movie'
+ *          responses: 
+ *              201:
+ *                  description: movie was successfully created.
+ *                  content: 
+ *                      application/json:
+ *                          schema:
+ *                              $ref:  '#/components/schemas/movie'
+ *              400:
+ *                  description: Properties name, duration and trailer are required and check validations of length and data type.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref:  '#/components/schemas/EmptyPost'                
+ * */
 router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), createmovies)
 
-/*
-* @swagger
-*  /api/v1/movies:
-*      get:
-*          summary: Get an movies list
-*          tags: [movies]
-*          parameters: 
-*               - $ref: '#/components/parameters/token' 
-*          responses: 
-*              200:
-*                  description: the list of movies.
-*                  content:
-*                      application/json:
-*                          schema:
-*                              type: array
-*                              items: 
-*                                  $ref: '#/components/schemas/movies'
-*              404:
-*                  description: the list of movies is empty
-* */
+/**
+ * @swagger
+ *  /api/v1/movies:
+ *      get:
+ *          summary: Get a movie list
+ *          tags: [movies]
+ *          parameters:
+ *              - $ref: '#/components/parameters/limit'
+ *              - $ref: '#/components/parameters/offset'
+ *          responses: 
+ *              200:
+ *                  description: the list of movies.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: array
+ *                              items: 
+ *                                  $ref: '#/components/schemas/movie'
+ *              404:
+ *                  description: the list of movies is empty
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/Empty'                  
+ * */
 router.get('/', cache('2 minutes'), getmovies)
 
-/*
+/**
  * @swagger
  *  /api/v1/movies/{id}:
  *      get:
- *          summary: Get an movie by id
+ *          summary: Get a movie by id
  *          tags: [movies]
- *          parameters: 
- *              - $ref: '#/components/parameters/token' 
- *              - $ref: '#/components/parameters/moviesId'
+ *          parameters:
+ *              - $ref: '#/components/parameters/movieId'
+ *              - $ref: '#/components/parameters/limit'
+ *              - $ref: '#/components/parameters/offset'
  *          responses: 
  *              200:
  *                  description: the movie with the id provided.
@@ -139,63 +166,74 @@ router.get('/', cache('2 minutes'), getmovies)
  *                          schema:
  *                              type: array
  *                              items: 
- *                                  $ref: '#/components/schemas/movies'
+ *                                  $ref: '#/components/schemas/movie'
  *              404:
  *                  description: The id provided doesn't exist in the database.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              type: array
+ *                              items:
+ *                                  $ref: '#/components/schemas/Empty'    
  * */
 router.get('/:id', cache('1 minutes'), getOnemovies)
 
-/*
+/**
  * @swagger
  *  /api/v1/movies/{id}:
  *      put:
- *          summary: Update an movie by id
+ *          summary: Update a movie by id.
  *          tags: [movies]
- *          parameters: 
- *              - $ref: '#/components/parameters/token' 
- *              - $ref: '#/components/parameters/moviesId'
+ *          parameters:
+ *              - $ref: '#/components/parameters/movieId'
  *          requestBody:
  *              required: true
  *              content: 
- *                  application/json:
+ *                  multipart/form-data:
  *                      schema:
- *                          $ref: '#/components/schemas/movies'
+ *                          $ref: '#/components/schemas/movie'
  *          responses:
  *              200:
  *                  description: The update of the movie has been successfully completed.
  *                  content:
  *                      application/json:
  *                          schema:
- *                              $ref: '#/components/schemas/movies'
+ *                              $ref: '#/components/schemas/movie'
  *              400:
- *                  description: fields empty.
+ *                  description: Properties name, duration and trailer are required and check validations of length and data type.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/EmptyPut'
  *              404:
  *                  description: There is no movie registered with the provided id.
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/components/schemas/noDataPut'
  */
 router.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), updatemovies)
 
-/*
+/**
  * @swagger
  *  /api/v1/movies/{id}:
  *      delete: 
- *          summary: Delete an movie by id
+ *          summary: Delete a movie by id.
  *          tags: [movies]
- *          parameters: 
- *              - $ref: '#/components/parameters/token' 
- *              - $ref: '#/components/parameters/moviesId'
+ *          parameters:
+ *              - $ref: '#/components/parameters/movieId'
  *          responses:
  *              200:
  *                  description: The removal of the movie has been successfully completed.
  *                  content:
  *                      application/json:
  *                          schema:
- *                              $ref: '#/components/schemas/movies'
+ *                              $ref: '#/components/schemas/movie'
  *              500:
  *                  description: Server error.
  *              404:
  *                  description: There is no movie registered with the provided id.
  */
-
 router.delete('/:id', deletemovies)
 
 export default router;
