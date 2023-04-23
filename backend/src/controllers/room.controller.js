@@ -22,30 +22,21 @@ class RoomController {
         const { page, limit } = req.query;
         // Try to validate the pagination query parameters
         try {
-            if(page && limit) {
-                // Validate the pagination query parameters
-                await paginationSchema.validateAsync({ page, limit });
-            }
+            // Check if the page and limit are defined to validate the pagination query parameters
+            if(page && limit) await paginationSchema.validateAsync({ page, limit });
             // Try to get all rooms
             try {
                 // Get all rooms
-                const { data: rooms } = await this._roomService.getAllRooms(page, limit);
+                const roomsDB = await this._roomService.getAllRooms(page, limit);
                 // Set the response
-                response = {
-                    status: 200,
-                    message: 'Rooms found',
-                    data: rooms,
-                }
+                response = { status: 200, message: 'Rooms found', data: roomsDB }
             }
             // If there is an error
             catch(error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Internal server error',
-                }
+                response = { status: 500, message: 'Error getting the rooms' }
             }
         }
         // Catch the error
@@ -53,10 +44,7 @@ class RoomController {
             // Log the error
             console.log(error);
             // Set the response
-            response = {
-                status: 400,
-                message: error.details[0].message,
-            }
+            response = { status: 400, message: error.details[0].message }
         }
         // Return the response
         res.status(response.status).json(response);
@@ -71,30 +59,21 @@ class RoomController {
         const { page, limit } = req.query;
         // Try to validate the pagination query parameters
         try {
-            if(page && limit) {
-                // Validate the pagination query parameters
-                await paginationSchema.validateAsync({ page, limit });
-            }
+            // Check if the page and limit are defined to validate the pagination query parameters
+            if(page && limit) await paginationSchema.validateAsync({ page, limit });
             // Try to get all rooms
             try {
                 // Get all rooms
-                const { data: rooms } = await this._roomService.getRoomsByCinema(id, page, limit);
+                const roomsDB = await this._roomService.getRoomsByCinema(id, page, limit);
                 // Set the response
-                response = {
-                    status: 200,
-                    message: 'Rooms found',
-                    data: rooms,
-                }
+                response = { status: 200, message: 'Rooms found', data: roomsDB }
             }
             // If there is an error
             catch(error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error getting rooms',
-                }
+                response = { status: 500, message: 'Error getting rooms' }
             }
         }
         // Catch the error
@@ -102,10 +81,7 @@ class RoomController {
             // Log the error
             console.log(error);
             // Set the response
-            response = {
-                status: 400,
-                message: error.details[0].message,
-            }
+            response = { status: 400, message: error.details[0].message }
         }
         // Return the response
         res.status(response.status).json(response);
@@ -115,30 +91,24 @@ class RoomController {
         // Create a response
         let response;
         // Get the room data
-        const {body: room} = req;
+        const {body: roomData} = req;
         // Try to validate the room data
         try {
             // Validate the room data
-            await roomCreateSchema.validateAsync(room);
+            await roomCreateSchema.validateAsync(roomData);
             // Try to create the room
             try {
                 // Create the room
-                await this._roomService.createRoom(room);
+                const roomDB = await this._roomService.createRoom(roomData);
                 // Set the response
-                response = {
-                    status: 201,
-                    message: 'Room created',
-                }
+                response = { status: 201, message: 'Room created', data: roomDB }
             }
             // If there is an error
             catch(error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error creating room',
-                }
+                response = { status: 500, message: 'Error creating room' }
             }
         }
         // Catch the error
@@ -146,10 +116,7 @@ class RoomController {
             // Log the error
             console.log(error);
             // Set the response
-            response = {
-                status: 400,
-                message: error.details[0].message,
-            }
+            response = { status: 400, message: error.details[0].message }
         }
         // Return the response
         res.status(response.status).send(response);
@@ -161,30 +128,24 @@ class RoomController {
         // get the room id
         const { id } = req.params;
         // Get the room data
-        const {body: room} = req;
+        const {body: roomData} = req;
         // Try to validate the room data
         try {
             // Validate the room data
-            await roomUpdateSchema.validateAsync(room);
+            await roomUpdateSchema.validateAsync(roomData);
             // Try to update the room
             try {
                 // Update the room
-                await this._roomService.updateRoom(id, room);
+                const roomDB = await this._roomService.updateRoom(id, roomData);
                 // Set the response
-                response = {
-                    status: 200,
-                    message: 'Room updated',
-                }
+                response = { status: 200, message: 'Room updated', data: roomDB }
             }
             // If there is an error
             catch(error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = {
-                    status: 500,
-                    message: 'Error updating room',
-                }
+                response = { status: 500, message: 'Error updating room' }
             }
         }
         // Catch the error
@@ -192,10 +153,7 @@ class RoomController {
             // Log the error
             console.log(error);
             // Set the response
-            response = {
-                status: 400,
-                message: error.details[0].message,
-            }
+            response = { status: 400, message: error.details[0].message }
         }
         // Return the response
         res.status(response.status).send(response);
@@ -209,22 +167,16 @@ class RoomController {
         // Try to delete the room
         try {
             // Delete the room
-            await this._roomService.deleteRoom(id);
+            const roomDB = await this._roomService.deleteRoom(id);
             // Set the response
-            response = {
-                status: 200,
-                message: 'Room deleted',
-            }
+            response = { status: 200, message: 'Room deleted', data: roomDB}
         }
         // Catch the error
         catch(error) {
             // Log the error
             console.log(error);
             // Set the response
-            response = {
-                status: 500,
-                message: 'Error deleting room',
-            }
+            response = { status: 500, message: 'Error deleting room' }
         }
         // Return the response
         res.status(response.status).send(response);

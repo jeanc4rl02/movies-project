@@ -24,16 +24,9 @@ class RoomService {
                 // Set the pagination variables
                 const offset = (page - 1) * limit;
                 // Get all rooms
-                const rooms = await this._roomModel.findAll({
-                    include: [
-                        {
-                            model: this._cinemaModel,
-                            as: 'cinema',
-                        },
-                    ],
-                    attributes: {
-                        exclude: ['cinemaId'],
-                    },
+                const roomsDB = await this._roomModel.findAll({
+                    include: [{ model: this._cinemaModel, as: 'cinema' }],
+                    attributes: { exclude: ['cinemaId'] },
                     limit,
                     offset,
                     order: [['createdAt', 'DESC']],
@@ -43,45 +36,21 @@ class RoomService {
                 // Set the total of pages
                 const totalPages = Math.ceil(totalRooms / limit);
                 // Create the response
-                response = {
-                    status: 200,
-                    message: 'Rooms found',
-                    data: {
-                        rooms,
-                        totalRooms,
-                        totalPages,
-                    },
-                };
+                response = { roomsDB, totalRooms, totalPages };
             }
             // If the page and limit aren't defined
             else{
                 // Get all rooms
-                const rooms = await this._roomModel.findAll({
-                    attributes: {
-                        exclude: ['cinemaId'],
-                    },
-                    include: [
-                        {
-                            model: cinemaModel,
-                            as: 'cinema',
-                        },
-                    ],
+                const roomsDB = await this._roomModel.findAll({
+                    attributes: { exclude: ['cinemaId'] },
+                    include: [{ model: cinemaModel, as: 'cinema' }],
                 });
                 // Create the response
-                response = {
-                    status: 200,
-                    message: 'Rooms found',
-                    data: rooms,
-                };
+                response = roomsDB;
             }
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Rooms not found',
-            };
             // Throw the error
             throw error;
         }
@@ -101,66 +70,33 @@ class RoomService {
                 // Get a rooms by cinema id
                 const roomsDB = await this._roomModel.findAll({
                     where: { cinemaId },
-                    include: [
-                        {
-                            model: this._cinemaModel,
-                            as: 'cinema',
-                        },
-                    ],
-                    attributes: {
-                        exclude: ['cinemaId'],
-                    },
+                    include: [{ model: this._cinemaModel, as: 'cinema' }],
+                    attributes: { exclude: ['cinemaId'] },
                     limit,
                     offset,
                     order: [['createdAt', 'DESC']],
                 });
                 // Set the total of rooms
-                const totalRooms = await this._roomModel.count({
-                    where: { cinemaId },
-                });
+                const totalRooms = await this._roomModel.count({ where: { cinemaId } });
                 // Set the total of pages
                 const totalPages = Math.ceil(totalRooms / limit);
                 // Create the response
-                response = {
-                    status: 200,
-                    message: 'Rooms found',
-                    data: {
-                        rooms: roomsDB,
-                        totalRooms,
-                        totalPages,
-                    },
-                };
+                response = { roomsDB, totalRooms, totalPages };
             }
             // If the page and limit aren't defined
             else{
                 // Get a rooms by cinema id
                 const roomsDB = await this._roomModel.findAll({
                     where: { cinemaId },
-                    include: [
-                        {
-                            model: this._cinemaModel,
-                            as: 'cinema',
-                        },
-                    ],
-                    attributes: {
-                        exclude: ['cinemaId'],
-                    },
+                    include: [{ model: this._cinemaModel, as: 'cinema' }],
+                    attributes: { exclude: ['cinemaId'] },
                 });
                 // Create the response
-                response = {
-                    status: 200,
-                    message: 'Rooms found',
-                    data: roomsDB,
-                };
+                response = { status: 200, message: 'Rooms found', data: roomsDB };
             }
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Rooms not found',
-            };
             // Throw the error
             throw error;
         }
@@ -174,31 +110,15 @@ class RoomService {
         // Try to get a room by id
         try {
             // Get a room by id
-            const room = await this._roomModel.findByPk(id, {
-                include: [
-                    {
-                        model: this._cinemaModel,
-                        as: 'cinema',
-                    },
-                ],
-                attributes: {
-                    exclude: ['cinemaId'],
-                },
+            const roomDB = await this._roomModel.findByPk(id, {
+                include: [{ model: this._cinemaModel, as: 'cinema' }],
+                attributes: { exclude: ['cinemaId'] },
             });
             // Create the response
-            response = {
-                status: 200,
-                message: 'Room found',
-                data: room,
-            };
+            response = roomDB;
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Room not found',
-            };
             // Throw the error
             throw error;
         }
@@ -212,20 +132,12 @@ class RoomService {
         // Try to create a room
         try {
             // Create a room
-            await this._roomModel.create(room);
+            const roomDB = await this._roomModel.create(room);
             // Create the response
-            response = {
-                status: 200,
-                message: 'Room created',
-            };
+            response = roomDB
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error creating room',
-            };
             // Throw the error
             throw error;
         }
@@ -239,22 +151,12 @@ class RoomService {
         // Try to update a room
         try {
             // Update a room
-            await this._roomModel.update(room, {
-                where: { id },
-            });
+            const roomDB = await this._roomModel.update(room, { where: { id }, returning: true });
             // Create the response
-            response = {
-                status: 200,
-                message: 'Room updated',
-            };
+            response = roomDB
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error updating room',
-            };
             // Throw the error
             throw error;
         }
@@ -268,22 +170,12 @@ class RoomService {
         // Try to delete a room
         try {
             // Delete a room
-            await this._roomModel.destroy({
-                where: { id },
-            });
+            const roomDB = await this._roomModel.destroy({ where: { id }, returning: true});
             // Create the response
-            response = {
-                status: 200,
-                message: 'Room deleted',
-            };
+            response = roomDB;
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error deleting room',
-            };
             // Throw the error
             throw error;
         }
