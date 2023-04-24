@@ -1,39 +1,40 @@
 import sequelize from '../database/cinema.database.js';
 import { DataTypes } from 'sequelize';
 import roomModel from './room.model.js';
-const cinemaModel = sequelize.define('cinema', {
+import movieModel from './movie.model.js'
+const movieRoomModel = sequelize.define('movieRoom', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true 
     },
     start_date: {
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         allowNull: false,
     },
     end_date: {   
-        type: DataTypes.STRING,
+        type: DataTypes.DATE,
         defaultValue: true 
     },
     hour: {
-        type: DataTypes.STRING,
+        type: DataTypes.TIME,
         allowNull: false,
     }
 }, {
     timestamps: true,
-    tableName: 'cinemas'
+    tableName: 'movie_rooms'
 });
 
-cinemaModel.belongsTo(movieModel, {
+movieRoomModel.belongsTo(movieModel, {
     foreignKey: 'movie_id',
     targetId: 'id',
     allowNull: false
 });
 
-cinemaModel.belongsTo(roomModel, {
+movieRoomModel.belongsTo(roomModel, {
     foreignKey: 'room_id',
     targetId: 'id',
     allowNull: false
 });
 
-export default cinemaModel;
+export default movieRoomModel;
