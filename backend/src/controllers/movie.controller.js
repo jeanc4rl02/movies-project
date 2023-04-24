@@ -15,7 +15,7 @@ export const createmovies = async (req, res) => {
         id_genres: 1//JSON.parse(req.body.id_genres)
     }
     console.log(req.body)*/
-    const { name, duration, trailer, id_genres } = req.body;
+    const { name, duration, trailer } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
         res.status(400).json({
