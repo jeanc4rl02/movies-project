@@ -1,5 +1,5 @@
 // Description: Pagination joi validation schema
-// Author: Sebastián Gámez Ariza
+// Author: Jean Carlos Carrillo & Sebastián Gámez Ariza
 
 // Importing the joi library
 import Joi from 'joi';
@@ -8,11 +8,9 @@ import Joi from 'joi';
 const paginationSchema = Joi.object({
     // User pagination schema
     page: Joi
-        .number()
-        .required(),
+        .number(),
     limit: Joi
         .number()
-        .required()
 });
 
 // Export the pagination schema
