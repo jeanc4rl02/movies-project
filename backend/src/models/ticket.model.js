@@ -5,9 +5,11 @@
 import { DataTypes } from 'sequelize';
 // Importing the database connection
 import cinemaDatabase from '../database/cinema.database.js';
+// Importing the movie room model
+import movieRoomModel from './movieRoom.model.js';
 
 // Creating the ticket model
-const TicketModel = cinemaDatabase.define('ticket', {
+const ticketModel = cinemaDatabase.define('ticket', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -32,6 +34,12 @@ const TicketModel = cinemaDatabase.define('ticket', {
     }
 }, { tableName: 'tickets'});
 
-// Exporting the ticket model
-export default TicketModel;
+// Creating the relationship with the movie room model
+ticketModel.belongsTo(movieRoomModel, { 
+    foreignKey: 'movieRoomId',
+    field: 'movie_room_id',
+    as: 'movieRoom'
+});
 
+// Exporting the ticket model
+export default ticketModel;
