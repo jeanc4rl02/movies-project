@@ -87,8 +87,10 @@ export const deleteCinema = async (req, res) => {
     const cinemaToDelete = await cinemaModel.findByPk(id)
     if(cinemaToDelete){
         try {
-            await deleteImage(cinemaToDelete.logo.public_id);
-            await cinemaModel.destroy({where: {id}});
+            await Promise.all([
+                deleteImage(cinemaToDelete.logo.public_id),
+                cinemaModel.destroy({where: {id}})
+            ])
             response(200, RESPONSE.DELETE_OK, RESPONSE.NO_DATA, res);
         } catch (error) {
             console.log(error.message);

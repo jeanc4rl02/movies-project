@@ -28,6 +28,5 @@ export const uploadToCloudinary = async (isAnyFile, pathToUpload) => {
     } catch (error) {
         console.log(error);
     }
-
 }
 
