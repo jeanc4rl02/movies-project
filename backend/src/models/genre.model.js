@@ -4,6 +4,9 @@
 // Import sequelize instance (Database connection) //same conection......
 import cinemaDatabase from '../database/cinema.database.js';
 
+
+
+
 // Import datatypes from sequelize
 import { DataTypes } from 'sequelize';
 
@@ -19,10 +22,10 @@ const genresModel = cinemaDatabase.define('genres', {
         allowNull: false,
     },
 },
-    {
-        tableName: 'genres',
-        timestamps: true
-    });
+{
+    tableName: 'genres',
+    timestamps: true
+});
 
 // Export gender model
 export default genresModel;

@@ -29,7 +29,7 @@ const moviesSchema = joi.object({
         .object({
             public_url: joi.string(),
             secure_url: joi.string()
-        })
+        }),
 
 });
 

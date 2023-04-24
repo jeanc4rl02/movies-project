@@ -7,15 +7,16 @@ import fs from 'fs-extra';
 import paginationSchema from '../schemas/pagination.schema.js';
 
 export const createmovies = async (req, res) => {
-    const { name, duration, trailer, image, id_genres} = req.body;
+    const { name, duration, trailer} = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
+        console.log(id_genres)
         res.status(400).json({
             message: error.details[0].message
         });
     } else {
         if (name == null || duration == null ||
-            trailer == null || id_genres == null) {
+            trailer == null) {
             res.status(400).json({
                 message: 'field incomplete.'
             });
@@ -34,7 +35,7 @@ export const createmovies = async (req, res) => {
                         secure_url: result.secure_url
                     }
                 }
-                await moviesModel.create(newmovie, {include: genresModel.findByPk(id_genres)});
+                await moviesModel.create(newmovie);
                 await fs.unlink(req.files.image.tempFilePath);
                 res.status(201).json({
                     message: 'Successful request',
@@ -55,7 +56,16 @@ export const getmovies = async (req, res) => {
 
     (error) ?
         movies = await moviesModel.findAll({include: genresModel}) :
-        movies = await moviesModel.findAll({ offset, limit , include: genresModel});
+        movies = await moviesModel.findAll({
+            offset, 
+            limit , 
+            include: {
+                model: genresModel,
+                through: {
+                    attributes: [],
+                },
+            }
+        });
     (movies.length != 0) ?
         res.send({
             message: 'Successful request',
