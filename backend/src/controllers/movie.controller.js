@@ -1,12 +1,13 @@
 import moviesSchema from '../schemas/movie.schema.js';
 import moviesModel from '../models/movie.model.js';
+import genresModel from '../models/genre.model.js';
 
 import { uploadImage, deleteImage } from '../config/cloudinary.config.js';
 import fs from 'fs-extra';
 import paginationSchema from '../schemas/pagination.schema.js';
 
 export const createmovies = async (req, res) => {
-    const { name, duration, trailer, image } = req.body;
+    const { name, duration, trailer, image, id_genres} = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
         res.status(400).json({
@@ -14,14 +15,17 @@ export const createmovies = async (req, res) => {
         });
     } else {
         if (name == null || duration == null ||
-            trailer == null) {
+            trailer == null || id_genres == null) {
             res.status(400).json({
                 message: 'field incomplete.'
             });
         } else {
             try {
                 const newmovie = {
-                    name, duration, trailer, image: {}
+                    name, 
+                    duration, 
+                    trailer, 
+                    image: {}, 
                 }
                 if (req.files?.image) {
                     const result = await uploadImage(req.files.image.tempFilePath);
@@ -30,7 +34,7 @@ export const createmovies = async (req, res) => {
                         secure_url: result.secure_url
                     }
                 }
-                await moviesModel.create(newmovie);
+                await moviesModel.create(newmovie, {include: genresModel.findByPk(id_genres)});
                 await fs.unlink(req.files.image.tempFilePath);
                 res.status(201).json({
                     message: 'Successful request',
@@ -50,8 +54,8 @@ export const getmovies = async (req, res) => {
     const { error, value } = await paginationSchema.validate(req.query, { abortEarly: false });
 
     (error) ?
-        movies = await moviesModel.findAll() :
-        movies = await moviesModel.findAll({ offset, limit });
+        movies = await moviesModel.findAll({include: genresModel}) :
+        movies = await moviesModel.findAll({ offset, limit , include: genresModel});
     (movies.length != 0) ?
         res.send({
             message: 'Successful request',

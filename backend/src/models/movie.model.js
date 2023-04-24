@@ -3,6 +3,7 @@
 
 // Import sequelize instance (Database connection) //same conection......
 import cinemaDatabase from '../database/cinema.database.js';
+import genresModel from './genre.model.js';
 
 // Import datatypes from sequelize
 import { DataTypes } from 'sequelize';
@@ -31,10 +32,16 @@ const moviesModel = cinemaDatabase.define('movie', {
         allowNull: false,
     },
 },
-    {
+{
         tableName: 'movies',
         timestamps: true
-    });
+});
+moviesModel.belongsToMany(genresModel, {
+    through: 'id_genres',
+});
+genresModel.belongsToMany(moviesModel, {
+    through: 'id_genres',
+})
 
 // Export gender model
 export default moviesModel;

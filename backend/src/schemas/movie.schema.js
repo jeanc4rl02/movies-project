@@ -30,6 +30,7 @@ const moviesSchema = joi.object({
             public_url: joi.string(),
             secure_url: joi.string()
         })
+
 });
 
 // Exporting the schema
