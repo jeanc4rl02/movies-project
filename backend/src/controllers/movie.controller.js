@@ -7,16 +7,23 @@ import fs from 'fs-extra';
 import paginationSchema from '../schemas/pagination.schema.js';
 
 export const createmovies = async (req, res) => {
-    const { name, duration, trailer} = req.body;
+    /*console.log(req.body)
+    req.body = {
+        name: req.body.name,
+        duration: req.body.duration,
+        trailer: req.body.trailer,
+        id_genres: (req.body.id_genres.split(',')),
+    }*/
+    console.log(req.body)
+    const { name, duration, trailer, id_genres } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
-        console.log(id_genres)
         res.status(400).json({
             message: error.details[0].message
         });
     } else {
         if (name == null || duration == null ||
-            trailer == null) {
+            trailer == null || id_genres == null) {
             res.status(400).json({
                 message: 'field incomplete.'
             });
@@ -27,6 +34,7 @@ export const createmovies = async (req, res) => {
                     duration, 
                     trailer, 
                     image: {}, 
+                    id_genres,
                 }
                 if (req.files?.image) {
                     const result = await uploadImage(req.files.image.tempFilePath);
