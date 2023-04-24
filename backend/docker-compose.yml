@@ -1,0 +1,11 @@
+# Description: This is the docker compose file to create a production environment
+# Author: Sebastián Gámez Ariza
+
+version: '3.9'
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
