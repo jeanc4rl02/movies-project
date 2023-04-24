@@ -33,40 +33,20 @@ class UserService {
                 // Set the total of pages
                 const totalPages = Math.ceil(totalUsers / limit);
                 // Create the response
-                response = {
-                    status: 200,
-                    message: 'Users found',
-                    data: {
-                        users: usersDB,
-                        totalUsers,
-                        totalPages
-                    }
-                }
+                response = { users: usersDB, totalUsers, totalPages }
             }
             // If the page and limit are not 0
             else {
                 // Get all users from the database
                 const usersDB = await this._userModel.findAll({
-                    attributes: {
-                        exclude: ['password']
-                    },
+                    attributes: { exclude: ['password'] },
                 });
                 // Create the response
-                response = {
-                    status: 200,
-                    message: 'Users found',
-                    data: usersDB
-                }
+                response = usersDB
             }
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error getting users',
-                data: null
-            }
             // Throw the error
             throw error;
         }
@@ -82,19 +62,10 @@ class UserService {
             // Get the user from the database
             const userDB = await this._userModel.findByPk(id);
             // Create the response
-            response = {
-                status: 200,
-                message: 'User found',
-                data: userDB
-            }
+            response = userDB
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error getting user'
-            }
             // Throw the error
             throw error;
         }
@@ -109,24 +80,13 @@ class UserService {
         try {
             // Get the user from the database
             const userDB = await this._userModel.findOne({
-                where: {
-                    email
-                },
+                where: { email },
             });
             // Create the response
-            response = {
-                status: 200,
-                message: 'User found',
-                data: userDB
-            }
+            response = userDB
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error getting user'
-            }
             // Throw the error
             throw error;
         }
@@ -140,20 +100,14 @@ class UserService {
         // Try to create the user
         try {
             // Create the user in the database
-            await this._userModel.create(user);
+            const userDB = await this._userModel.create(user);
+            // Hide the password
+            userDB.password = '';
             // Create the response
-            response = {
-                status: 201,
-                message: 'User created',
-            }
+            response = userDB;
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error creating user'
-            }
             // Throw the error
             throw error;
         }
@@ -166,24 +120,12 @@ class UserService {
         let response;
         // Try to update the user
         try {
-            await this._userModel.update(user, {
-                where: {
-                    id: id
-                }
-            });
+            const userDB = await this._userModel.update(user, { where: { id: id }, returning: true } );
             // Create the response
-            response = {
-                status: 200,
-                message: 'User updated',
-            }
+            response = userDB;
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error updating user'
-            }
             // Throw the error
             throw error;
         }
@@ -196,24 +138,12 @@ class UserService {
         let response;
         // Try to delete the user
         try {
-            await this._userModel.destroy({
-                where: {
-                    id: id
-                }
-            });
+            const user = await this._userModel.destroy({ where: { id: id }, returning: true });
             // Create the response
-            response = {
-                status: 200,
-                message: 'User deleted',
-            }
+            response = user;
         }
         // Catch the error
         catch (error) {
-            // Create the response
-            response = {
-                status: 500,
-                message: 'Error deleting user'
-            }
             // Throw the error
             throw error;
         }

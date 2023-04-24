@@ -4,15 +4,19 @@
 
 // Import the user model
 import userModel from '../models/user.model.js';
+// Import the cinema model
 import cinemaModel from '../models/cinema.model.js'
+// Import the room model
+import roomModel from '../models/room.model.js';
 
 // Sync the database with the models
 const syncDatabase = async () => {
 	// Try to sync the database
 	try {
 		// Sync the database
-		await userModel.sync({force: true});
+		await userModel.sync();
 		await cinemaModel.sync(); 
+		await roomModel.sync();
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {

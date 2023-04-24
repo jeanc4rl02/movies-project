@@ -1,9 +1,19 @@
-import joi from 'joi';
+// Description: Pagination joi validation schema
+// Author: Sebastián Gámez Ariza
 
-const paginationSchema = joi.object({
-    limit: joi.number(),
-    offset: joi.number(),
+// Importing the joi library
+import Joi from 'joi';
+
+// Create the pagination schema
+const paginationSchema = Joi.object({
+    // User pagination schema
+    page: Joi
+        .number()
+        .required(),
+    limit: Joi
+        .number()
+        .required()
 });
-    
-export default paginationSchema;
 
+// Export the pagination schema
+export default paginationSchema;
