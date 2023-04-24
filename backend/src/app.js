@@ -20,6 +20,10 @@ import UserRouter from './routes/user.routes.js';
 import RoomRouter from './routes/room.routes.js';
 // Importing the routes
 import cinemaRouter from './routes/cinema.routes.js'
+//Importing the gender router
+import genreRouter from './routes/genre.routes.js';
+//Importing the movie router
+import movieRouter from './routes/movie.routes.js';
 
 class App {
 
@@ -36,6 +40,8 @@ class App {
         // Declare paths
         this.docPath = '/api/v1/docs'
         this.cinemaPath = '/api/v1/cinemas';
+        this.genrePath = '/api/v1/genres';
+        this.moviePath = '/api/v1/movies';
         // Call the methods to configure the app
         this.setMiddlewares();
         // Define routes
@@ -56,6 +62,8 @@ class App {
         this.app.use('/api/v1/rooms', this.routes.roomRoute.router);
         this.app.use(this.docPath, swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use(this.cinemaPath, cinemaRouter);
+        this.app.use(this.genrePath, genreRouter);
+        this.app.use(this.moviePath, movieRouter);
     }
     // Set database 
     setDatabase = async() => {
