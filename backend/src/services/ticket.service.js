@@ -2,9 +2,9 @@
 // Author: Sebastián Gámez Ariza
 
 // Importing the ticket model
-import ticketModel from "../models/ticket.model";
+import ticketModel from "../models/ticket.model.js";
 // Importing the movie room model
-import movieRoomModel from "../models/movieRoom.model";
+import movieRoomModel from "../models/movieRoom.model.js";
 
 // Create the ticket class service
 class TicketService {
@@ -57,8 +57,8 @@ class TicketService {
         // Return the response
         return response;
     }
-    // Method to get a ticket by movie room id
-    getTicketByMovieRoom = async(movieRoomId, page, limit) => {
+    // Method to get tickets by movie room id
+    getTicketsByMovieRoom = async(movieRoomId, page, limit) => {
         // Create a response
         let response;
         // Try to get tickets by movie room id
@@ -162,3 +162,6 @@ class TicketService {
     }   
 
 }
+
+// Export the ticket class service
+export default TicketService;
