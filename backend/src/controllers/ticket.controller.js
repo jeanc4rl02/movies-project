@@ -12,83 +12,77 @@ class TicketController {
     // Ticket service instance
     _ticketService = new TicketService();
 
-    // Method to get all tickets
+    // Get all tickets
     getAllTickets = async (req, res) => {
         // Create a response
         let response;
-        // Get the page and limit
+        // Get the page and limit query parameters
         const { page, limit } = req.query;
-        // Try to validate the pagination schema
+        // Try to validate the pagination query parameters
         try {
-            // Check if the page and limit are defined
-            if (page && limit) {
-                // Validate the pagination schema
-                await paginationSchema.validateAsync({ page, limit });
-            }
+            // Check if the page and limit are defined to validate the pagination query parameters
+            if(page && limit) await paginationSchema.validateAsync({ page, limit });
             // Try to get all tickets
             try {
                 // Get all tickets
                 const ticketsDB = await this._ticketService.getAllTickets(page, limit);
                 // Set the response
-                response = { status: 200, message: 'Tickets found', data: ticketsDB };
+                response = { status: 200, message: 'Tickets found', data: ticketsDB }
             }
-            // Catch the error
-            catch (error) {
+            // If there is an error
+            catch(error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = { status: 404, message: 'Tickets not found' };
+                response = { status: 500, message: 'Error getting the tickets' }
             }
         }
         // Catch the error
-        catch (error) {
+        catch(error) {
             // Log the error
             console.log(error);
             // Set the response
-            response = { status: 400, message: error.details[0].message };
+            response = { status: 400, message: error.details[0].message }
         }
         // Return the response
-        res.status(response.status).send(response);
+        res.status(response.status).json(response);
     }
-    // Method to get tickets by movie room id
-    getTicketsByMovieRoomId = async (req, res) => {
+    // Get tickets by movie room id method
+    getTicketsByMovieRoomId = async(req, res) => {
         // Create a response
         let response;
-        // Get the page and limit
-        const { page, limit } = req.query;
         // Get the movie room id
         const { movieRoomId } = req.params;
-        // Try to validate the pagination schema
+        // Get the page and limit query parameters
+        const { page, limit } = req.query;
+        // Try to validate the pagination query parameters
         try {
-            // Check if the page and limit are defined
-            if (page && limit) {
-                // Validate the pagination schema
-                await paginationSchema.validateAsync({ page, limit });
-            }
+            // Check if the page and limit are defined to validate the pagination query parameters
+            if(page && limit) await paginationSchema.validateAsync({ page, limit });
             // Try to get all tickets
             try {
                 // Get all tickets
                 const ticketsDB = await this._ticketService.getTicketsByMovieRoomId(movieRoomId, page, limit);
                 // Set the response
-                response = { status: 200, message: 'Tickets found', data: ticketsDB };
+                response = { status: 200, message: 'Tickets found', data: ticketsDB }
             }
-            // Catch the error
-            catch (error) {
+            // If there is an error
+            catch(error) {
                 // Log the error
                 console.log(error);
                 // Set the response
-                response = { status: 404, message: 'Tickets not found' };
+                response = { status: 500, message: 'Error getting Tickets' }
             }
         }
         // Catch the error
-        catch (error) {
+        catch(error) {
             // Log the error
             console.log(error);
             // Set the response
-            response = { status: 400, message: error.details[0].message };
+            response = { status: 400, message: error.details[0].message }
         }
         // Return the response
-        res.status(response.status).send(response);
+        res.status(response.status).json(response);
     }
     // Create a ticket
     createTicket = async (req, res) => {

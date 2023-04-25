@@ -16,7 +16,7 @@ const ticketModel = cinemaDatabase.define('ticket', {
         autoIncrement: true
     },
     seatNumber: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false,
         field: 'seat_number'
     },
