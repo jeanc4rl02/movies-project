@@ -26,8 +26,7 @@ const syncDatabase = async () => {
 		await cinemaModel.sync(); 
 		await roomModel.sync();
 		await movieRoomModel.sync();
-
-		await ticketModel.sync({force: true});
+		await ticketModel.sync();
 		// Log the success message
 		console.log('Database synchronized successfully');
 	} catch (error) {
