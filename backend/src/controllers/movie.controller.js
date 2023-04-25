@@ -13,10 +13,10 @@ export const createmovies = async (req, res) => {
         name: req.body.name,
         duration: req.body.duration,
         trailer: req.body.trailer,
-        id_genres: JSON.parse(req.body.id_genres)
+        genres: JSON.parse(req.body.genres)
     }
     console.log(req.body)
-    const { name, duration, trailer, id_genres } = req.body;
+    const { name, duration, trailer, genres } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
         res.status(400).json({
@@ -34,7 +34,7 @@ export const createmovies = async (req, res) => {
                     name,
                     duration,
                     trailer,
-                    id_genres: id_genres.map(genre => ({ id: genre.id, name: genre.name })),
+                    genres: genres.map(genre => ({ id: genre.id, name: genre.name })),
                     image: {},
                 }
                 const isAnyFile = req.files?.image;
@@ -93,10 +93,17 @@ export const updatemovies = async (req, res) => {
     const moviesToUpdate = await moviesModel.findByPk(id);
     if (moviesToUpdate) {
         try {
-            const { name, duration, trailer } = req.body;
+            req.body = {
+                name: req.body.name,
+                duration: req.body.duration,
+                trailer: req.body.trailer,
+                genres: JSON.parse(req.body.genres)
+            }
+            const { name, duration, trailer, genres } = req.body;
             moviesToUpdate.name = name
             moviesToUpdate.duration = duration
             moviesToUpdate.trailer = trailer
+            moviesToUpdate.genres = genres.map(genre => ({ id: genre.id, name: genre.name }))
             if (req.files?.image) {
                 const result = await uploadImage(req.files.image.tempFilePath);
                 //Delete old image in cloudinary 
