@@ -20,6 +20,7 @@ class TicketService {
         let response;
         // Try to get all tickets
         try {
+            // Check if the page and limit are defined
             if (page && limit) {
                 // Set the pagination variables
                 const offset = (page - 1) * limit;
@@ -41,7 +42,7 @@ class TicketService {
             // If the page and limit aren't defined
             else{
                 // Get all tickets
-                const ticketsDB = await this._roomModel.findAll({
+                const ticketsDB = await this._ticketModel.findAll({
                     include: [{ model: this._movieRoomModel, as: 'movieRoom' }],
                     attributes: { exclude: ['movieRoomId'] },
                 });
@@ -58,7 +59,7 @@ class TicketService {
         return response;
     }
     // Method to get tickets by movie room id
-    getTicketsByMovieRoom = async(movieRoomId, page, limit) => {
+    getTicketsByMovieRoomId = async(movieRoomId, page, limit) => {
         // Create a response
         let response;
         // Try to get tickets by movie room id
@@ -67,9 +68,9 @@ class TicketService {
             if (page && limit) {
                 // Set the pagination variables
                 const offset = (page - 1) * limit;
-                // Get tickets
+                // Get tickets by movie room id
                 const ticketsDB = await this._ticketModel.findAll({
-                    where: { movieRoomId: movieRoomId },
+                    where: { movieRoomId },
                     include: [{ model: this._movieRoomModel, as: 'movieRoom' }],
                     attributes: { exclude: ['movieRoomId'] },
                     limit,
@@ -77,7 +78,7 @@ class TicketService {
                     order: [['createdAt', 'DESC']],
                 });
                 // Set the total of tickets
-                const totalTickets = await this._ticketModel.count({ where: { movieRoomId: movieRoomId } });
+                const totalTickets = await this._ticketModel.count({ where: { movieRoomId } });
                 // Set the total of pages
                 const totalPages = Math.ceil(totalTickets / limit);
                 // Create the response
@@ -87,7 +88,7 @@ class TicketService {
             else{
                 // Get tickets by movie room id
                 const ticketsDB = await this._ticketModel.findAll({
-                    where: { cinemaId: movieRoomId },
+                    where: { movieRoomId },
                     include: [{ model: this._movieRoomModel, as: 'movieRoom' }],
                     attributes: { exclude: ['movieRoomId'] },
                 });

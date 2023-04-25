@@ -7,10 +7,17 @@ import fs from 'fs-extra';
 import paginationSchema from '../schemas/pagination.schema.js';
 
 export const createmovies = async (req, res) => {
-    const { name, duration, trailer} = req.body;
+    /*console.log(req.body)
+    req.body = {
+        name: req.body.name,
+        duration: req.body.duration,
+        trailer: req.body.trailer,
+        id_genres: 1//JSON.parse(req.body.id_genres)
+    }
+    console.log(req.body)*/
+    const { name, duration, trailer, id_genres } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
-        console.log(id_genres)
         res.status(400).json({
             message: error.details[0].message
         });
@@ -55,16 +62,11 @@ export const getmovies = async (req, res) => {
     const { error, value } = await paginationSchema.validate(req.query, { abortEarly: false });
 
     (error) ?
-        movies = await moviesModel.findAll({include: genresModel}) :
+        movies = await moviesModel.findAll() :
         movies = await moviesModel.findAll({
             offset, 
             limit , 
-            include: {
-                model: genresModel,
-                through: {
-                    attributes: [],
-                },
-            }
+            
         });
     (movies.length != 0) ?
         res.send({

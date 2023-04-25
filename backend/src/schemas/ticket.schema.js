@@ -6,8 +6,6 @@ import Joi from 'joi';
 
 // Define the ticket schema
 export const ticketUpdateSchema = Joi.object({
-    title: Joi
-        .string(),  
     seatNumber: Joi
         .string()
         .alphanum(),
