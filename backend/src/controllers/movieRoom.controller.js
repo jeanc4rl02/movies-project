@@ -4,6 +4,7 @@ import paginationSchema from '../schemas/pagination.schema.js';
 import {response, RESPONSE} from '../utils/response.util.js'
 import roomModel from '../models/room.model.js';
 import moviesModel from '../models/movie.model.js';
+import { createAllTickets } from '../utils/movieRoom.util.js';
 
 export const getAllMovieRooms = async(req, res) => {
     let movieRooms;
@@ -44,6 +45,21 @@ export const getOneMovieRoom = async(req, res) => {
 }
 
 
+export const getAllMovieRoomByMovieId = async(req, res) => {
+    const {id} = req.params
+    const movieRoom = await movieRoomModel.findAll({
+        where: {movie_id: id},
+        include: [
+            {model: roomModel}, 
+            {model: moviesModel}],
+        attributes: {
+            exclude: ['room_id', 'movie_id']
+        }
+    })
+    movieRoom.length != 0 ? response(200, RESPONSE.OK, movieRoom, res ) : response(404, RESPONSE.NO_DATA_ID, RESPONSE.NO_DATA, res);
+}
+
+
 export const createMovieRoom = async (req, res) => {
     const { vip, general, preferential, hour, start_date, end_date, movie_id, room_id} = req.body;
     const {error, value} = await movieRoomSchema.validate(req.body, {abortEarly: false});
@@ -53,6 +69,7 @@ export const createMovieRoom = async (req, res) => {
         try {
             const newMovieRoom = {hour, start_date, end_date, movie_id, room_id};
             const movieRoomCreated = await movieRoomModel.create(newMovieRoom);
+            await createAllTickets(general, preferential, vip, movieRoomCreated.id);
             response(201, RESPONSE.OK, movieRoomCreated, res)
         } catch (error) {
             console.log(error.message);
