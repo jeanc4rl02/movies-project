@@ -45,15 +45,15 @@ export const getOneMovieRoom = async(req, res) => {
 
 
 export const createMovieRoom = async (req, res) => {
-    const {hour, vip, general, preferential, start_date, end_date, movie_id, room_id} = req.body;
+    const { vip, general, preferential, hour, start_date, end_date, movie_id, room_id} = req.body;
     const {error, value} = await movieRoomSchema.validate(req.body, {abortEarly: false});
     if(error){
         response(400, error.details[0].message, RESPONSE.NO_DATA, res)
     } else {
         try {
             const newMovieRoom = {hour, start_date, end_date, movie_id, room_id};
-            await movieRoomModel.create(newMovieRoom),
-            response(201, RESPONSE.OK, newMovieRoom, res)
+            const movieRoomCreated = await movieRoomModel.create(newMovieRoom);
+            response(201, RESPONSE.OK, movieRoomCreated, res)
         } catch (error) {
             console.log(error.message);
             res.status(400).json({message: error.message});
@@ -68,13 +68,7 @@ export const updateMovieRoom = async (req, res) => {
     if(movieRoomToUpdate){
         try {
             const {vip, general, preferential, ...dataToUpdate} = req.body;
-            console.log(dataToUpdate);
-            await movieRoomToUpdate.update(
-                dataToUpdate,
-                {where: 
-                    {id}
-                }
-            )
+            await movieRoomToUpdate.update(dataToUpdate, {where: {id}})
             response(200, RESPONSE.OK, movieRoomToUpdate, res)
         } catch (error) {
             console.log(error.message);
