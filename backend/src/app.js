@@ -10,34 +10,42 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 // Importing the swagger configuration
 import swaggerConfiguration from './config/swagger.config.js';
-// Importing the database connection test
+// Importing the database connection test and sync  
 import testDatabase from './database/test.database.js';
-// Importing the database sync
 import syncDatabase from './database/sync.database.js';
-// Importing the user router
+// Importing the routers
 import UserRouter from './routes/user.routes.js';
-// Importing the routes
+import RoomRouter from './routes/room.routes.js';
 import cinemaRouter from './routes/cinema.routes.js'
+import genreRouter from './routes/genre.routes.js';
+import movieRouter from './routes/movie.routes.js';
+import ticketRouter from './routes/ticket.routes.js';
+//Importing the movie router
+import movieRoomRouter from './routes/movieRoom.routes.js';
 
 class App {
 
     // The app properties
+    app = express();
+    // Routes
     routes = {
         userRoute: new UserRouter(),
+        roomRoute: new RoomRouter(),
+        ticketRoute: new ticketRouter()
     }
 
     // The constructor method
     constructor() {
-        // Declare and initialize the express app
-        this.app = express();
         // Declare paths
         this.docPath = '/api/v1/docs'
         this.cinemaPath = '/api/v1/cinemas';
+        this.genrePath = '/api/v1/genres';
+        this.moviePath = '/api/v1/movies';
+        this.movieRoomPath = '/api/v1/movie-rooms'
         // Call the methods to configure the app
         this.setMiddlewares();
         // Define routes
         this.setRoutes();
-        
         // Set database
         this.setDatabase();
     }
@@ -50,9 +58,14 @@ class App {
     // The routes method
     setRoutes = () => {
         this.app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
-        this.app.use('/api/v1/users', this.routes.userRoute.getRouter());
+        this.app.use('/api/v1/users', this.routes.userRoute.router);
+        this.app.use('/api/v1/rooms', this.routes.roomRoute.router);
+        this.app.use('/api/v1/tickets', this.routes.ticketRoute.router);
         this.app.use(this.docPath, swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use(this.cinemaPath, cinemaRouter);
+        this.app.use(this.genrePath, genreRouter);
+        this.app.use(this.moviePath, movieRouter);
+        this.app.use(this.movieRoomPath, movieRoomRouter);
     }
     // Set database 
     setDatabase = async() => {

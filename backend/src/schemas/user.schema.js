@@ -80,20 +80,3 @@ export const userUpdateSchema = Joi.object({
         .min(6)
         .max(30)
 });
-
-export const userIdSchema = Joi.object({
-    id: Joi
-        .number()
-        .integer()
-        .required()
-});
-
-// User pagination schema
-export const userPaginationSchema = Joi.object({
-    page: Joi
-        .number()
-        .required(),
-    limit: Joi
-        .number()
-        .required()
-});
