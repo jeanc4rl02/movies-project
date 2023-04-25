@@ -24,6 +24,8 @@ import cinemaRouter from './routes/cinema.routes.js'
 import genreRouter from './routes/genre.routes.js';
 //Importing the movie router
 import movieRouter from './routes/movie.routes.js';
+//Importing the movie router
+import movieRoomRouter from './routes/movieRoom.routes.js';
 
 class App {
 
@@ -42,6 +44,7 @@ class App {
         this.cinemaPath = '/api/v1/cinemas';
         this.genrePath = '/api/v1/genres';
         this.moviePath = '/api/v1/movies';
+        this.movieRoomPath = '/api/v1/movie-rooms'
         // Call the methods to configure the app
         this.setMiddlewares();
         // Define routes
@@ -64,6 +67,7 @@ class App {
         this.app.use(this.cinemaPath, cinemaRouter);
         this.app.use(this.genrePath, genreRouter);
         this.app.use(this.moviePath, movieRouter);
+        this.app.use(this.movieRoomPath, movieRoomRouter);
     }
     // Set database 
     setDatabase = async() => {

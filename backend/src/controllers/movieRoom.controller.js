@@ -1,44 +1,59 @@
-import fs from 'fs-extra';
-import cinemaModel from '../models/cinema.model.js';
-import cinemaSchema from '../schemas/cinema.schema.js';
-import {uploadImage, deleteImage} from '../config/cloudinary.config.js';
+import movieRoomModel from '../models/movieRoom.model.js';
+import movieRoomSchema from '../schemas/movieRoom.schema.js';
 import paginationSchema from '../schemas/pagination.schema.js';
-import {response, uploadToCloudinary, RESPONSE} from '../utils/response.util.js'
+import {response, RESPONSE} from '../utils/response.util.js'
+import roomModel from '../models/room.model.js';
+import moviesModel from '../models/movie.model.js';
 
-export const getAllCinemas = async(req, res) => {
-    let cinemas;
+export const getAllMovieRooms = async(req, res) => {
+    let movieRooms;
     const {limit, offset} = req.query;
     const {error, value} = await paginationSchema.validate(req.query, {abortEarly: false});
-    error ? cinemas = await cinemaModel.findAll() : cinemas = await cinemaModel.findAll({offset, limit});
-    cinemas.length != 0 ? response(200, RESPONSE.OK , cinemas, res) : 
+    error ? movieRooms = await movieRoomModel.findAll({
+        include: [
+            {model: roomModel}, 
+            {model: moviesModel}],
+        attributes: {
+            exclude: ['room_id', 'movie_id']
+        },
+    }) : movieRooms = await movieRoomModel.findAll({
+        offset,
+        limit,
+        include: [
+            {model: roomModel}, 
+            {model: moviesModel}],
+        attributes: {
+            exclude: ['room_id', 'movie_id']}
+        });
+    movieRooms.length != 0 ? response(200, RESPONSE.OK , movieRooms, res) : 
     response(404, RESPONSE.NO_CINEMA, RESPONSE.NO_DATA, res)
 }
 
 
-export const getOneCinema = async(req, res) => {
+export const getOneMovieRoom = async(req, res) => {
     const {id} = req.params
-    const cinema = await cinemaModel.findByPk(id)
-    cinema ? response(200, RESPONSE.OK, cinema, res ) : response(404, RESPONSE.NO_DATA_ID, RESPONSE.NO_DATA, res);
+    const movieRoom = await movieRoomModel.findByPk(id, {
+        include: [
+            {model: roomModel}, 
+            {model: moviesModel}],
+        attributes: {
+            exclude: ['room_id', 'movie_id']
+        }
+    })
+    movieRoom ? response(200, RESPONSE.OK, movieRoom, res ) : response(404, RESPONSE.NO_DATA_ID, RESPONSE.NO_DATA, res);
 }
 
 
-export const createCinema = async (req, res) => {
-    const {name, address, city, phone} = req.body;
-    const {error, value} = await cinemaSchema.validate(req.body, {abortEarly: false});
-    if(error || !req.files){
-        response(400, error ? error.details[0].message : RESPONSE.EMPTY, RESPONSE.NO_DATA, res)
+export const createMovieRoom = async (req, res) => {
+    const {hour, vip, general, preferential, start_date, end_date, movie_id, room_id} = req.body;
+    const {error, value} = await movieRoomSchema.validate(req.body, {abortEarly: false});
+    if(error){
+        response(400, error.details[0].message, RESPONSE.NO_DATA, res)
     } else {
         try {
-            const newCinema = {name, address, city, phone, logo: {}};
-            const isAnyFile = req.files?.logo;
-            const pathToUpload = req.files.logo.tempFilePath;
-            const result = await uploadToCloudinary(isAnyFile, pathToUpload);
-            newCinema.logo = result;
-            await Promise.all([
-                cinemaModel.create(newCinema),
-                fs.unlink(pathToUpload) 
-            ])
-            response(201, RESPONSE.OK, newCinema, res)
+            const newMovieRoom = {hour, start_date, end_date, movie_id, room_id};
+            await movieRoomModel.create(newMovieRoom),
+            response(201, RESPONSE.OK, newMovieRoom, res)
         } catch (error) {
             console.log(error.message);
             res.status(400).json({message: error.message});
@@ -47,31 +62,20 @@ export const createCinema = async (req, res) => {
 }
 
 
-export const updateCinema = async (req, res) => {
+export const updateMovieRoom = async (req, res) => {
     const {id} = req.params
-    const cinemaToUpdate = await cinemaModel.findByPk(id)
-    if(cinemaToUpdate){
+    const movieRoomToUpdate = await movieRoomModel.findByPk(id)
+    if(movieRoomToUpdate){
         try {
-            const {name, address, city, phone} = req.body;
-            cinemaToUpdate.name = name
-            cinemaToUpdate.address = address
-            cinemaToUpdate.city = city
-            cinemaToUpdate.phone = phone
-            //Update the image in cloudinary
-            if(req.files?.logo){
-                const result = await uploadImage(req.files.logo.tempFilePath);
-                //Delete old image in cloudinary 
-                await deleteImage(cinemaToUpdate.logo.public_id)
-                cinemaToUpdate.logo = {
-                    public_id: result.public_id,
-                    secure_url: result.secure_url
+            const {vip, general, preferential, ...dataToUpdate} = req.body;
+            console.log(dataToUpdate);
+            await movieRoomToUpdate.update(
+                dataToUpdate,
+                {where: 
+                    {id}
                 }
-                //Delete temporal files
-                await fs.unlink(req.files.logo.tempFilePath)
-            }
-            //Update the cinema
-            await cinemaToUpdate.save();
-            response(200, RESPONSE.OK, cinemaToUpdate, res)
+            )
+            response(200, RESPONSE.OK, movieRoomToUpdate, res)
         } catch (error) {
             console.log(error.message);
             res.status(400).json({message: error.message});
@@ -82,15 +86,12 @@ export const updateCinema = async (req, res) => {
 }
 
 
-export const deleteCinema = async (req, res) => {
+export const deleteMovieRoom = async (req, res) => {
     const {id} = req.params
-    const cinemaToDelete = await cinemaModel.findByPk(id)
-    if(cinemaToDelete){
+    const movieRoomToDelete = await movieRoomModel.findByPk(id)
+    if(movieRoomToDelete){
         try {
-            await Promise.all([
-                deleteImage(cinemaToDelete.logo.public_id),
-                cinemaModel.destroy({where: {id}})
-            ])
+            await movieRoomModel.destroy({where: {id}})
             response(200, RESPONSE.DELETE_OK, RESPONSE.NO_DATA, res);
         } catch (error) {
             console.log(error.message);
