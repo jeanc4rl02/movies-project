@@ -32,20 +32,14 @@ const moviesModel = cinemaDatabase.define('movie', {
         allowNull: false,
     },
     /*id_genres: {
-        type: DataTypes.ARRAY(DataTypes.JSON),
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false
     }*/
 },
-{
+    {
         tableName: 'movies',
         timestamps: true
-});/*
-genresModel.belongsToMany(moviesModel, {
-    through: 'id_genres',
-});
-moviesModel.belongsToMany(genresModel, {
-    through: 'id_genres',
-});*/
+    });
 
 // Export gender model
 export default moviesModel;
