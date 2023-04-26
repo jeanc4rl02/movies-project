@@ -54,7 +54,7 @@ class RoomController {
         // Create a response
         let response;
         // Get the cinema id
-        const { id } = req.params;
+        const { cinemaId } = req.params;
         // Get the page and limit query parameters
         const { page, limit } = req.query;
         // Try to validate the pagination query parameters
@@ -64,7 +64,7 @@ class RoomController {
             // Try to get all rooms
             try {
                 // Get all rooms
-                const roomsDB = await this._roomService.getRoomsByCinema(id, page, limit);
+                const roomsDB = await this._roomService.getRoomsByCinema(cinemaId, page, limit);
                 // Set the response
                 response = { status: 200, message: 'Rooms found', data: roomsDB }
             }

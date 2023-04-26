@@ -239,10 +239,10 @@ class UserRouter {
         /**
          * @swagger
          * /api/v1/users:
-         * get:
-         *  summary: Get all users
-         *  description: Get all users
-         * tags: 
+         *  get:
+         *   summary: Get all users
+         *   description: Get all users
+         *   tags: 
          *    - Users
          *   parameters:
          *    - $ref: '#/components/parameters/token'

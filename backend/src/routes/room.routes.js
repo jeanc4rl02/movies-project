@@ -228,7 +228,7 @@ class RoomRouter {
          * 
         */
         this._router.get(
-            '/cinema/:id',
+            '/cinema/:cinemaId',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['client', 'seller', 'administrator']),
             this._expressCacheUtil.setCacheMiddleware(20),
