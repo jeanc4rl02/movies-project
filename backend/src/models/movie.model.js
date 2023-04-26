@@ -32,22 +32,22 @@ const moviesModel = cinemaDatabase.define('movie', {
         type: DataTypes.JSON,
         allowNull: false,
     },
-    /*genres: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
+    genres: {
+        type: DataTypes.STRING,//.ARRAY(DataTypes.STRING),
         allowNull: false
-    }*/
+    }
 },
     {
         tableName: 'movies',
         timestamps: true
     });
 
-moviesModel.belongsToMany(genresModel, {
+/*moviesModel.belongsToMany(genresModel, {
     through: 'gendersas',
 });
 genresModel.belongsToMany(moviesModel, {
     through: 'gendersas',
-});
+});*/
 /*const User_Profile = sequelize.define('User_Profile', {
     selfGranted: DataTypes.BOOLEAN
   }, { timestamps: false });

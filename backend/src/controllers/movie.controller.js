@@ -9,14 +9,14 @@ import paginationSchema from '../schemas/pagination.schema.js';
 
 export const createmovies = async (req, res) => {
     console.log(req.body)
-    req.body = {
+    /*req.body = {
         name: req.body.name,
         duration: req.body.duration,
         trailer: req.body.trailer,
         genres: JSON.parse(req.body.genres)
     }
     let gen = req.body.genres.map(genre => ({ id: genre.id, name: genre.name }));
-    console.log(req.body)
+    console.log(req.body)*/
     const { name, duration, trailer, genres } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
@@ -25,7 +25,7 @@ export const createmovies = async (req, res) => {
         });
     } else {
         if (name == null || duration == null ||
-            trailer == null) {
+            trailer == null || genres == null) {///////////////
             res.status(400).json({
                 message: 'field incomplete.'
             });
@@ -36,15 +36,18 @@ export const createmovies = async (req, res) => {
                     duration,
                     trailer,
                     image: {},
+                    genres,///////////////
                 }
                 const isAnyFile = req.files?.image;
                 const pathToUpload = req.files.image.tempFilePath;
                 const result = await uploadToCloudinary(isAnyFile, pathToUpload);
                 newmovie.image = result;
-                const news = await moviesModel.create(newmovie);
-                news.set(gen)
+                //const news = await moviesModel.create(newmovie);
+                //news.set(gen)
+                //console.log(news)
                 await Promise.all([
-                    news,
+                    //news,
+                    await moviesModel.create(newmovie),
                     fs.unlink(pathToUpload)
                 ])
                 response(201, RESPONSE.OK, newmovie, res)
@@ -95,17 +98,17 @@ export const updatemovies = async (req, res) => {
     const moviesToUpdate = await moviesModel.findByPk(id);
     if (moviesToUpdate) {
         try {
-            req.body = {
+            /*req.body = {
                 name: req.body.name,
                 duration: req.body.duration,
                 trailer: req.body.trailer,
                 genres: JSON.parse(req.body.genres)
-            }
+            }*/
             const { name, duration, trailer, genres } = req.body;
             moviesToUpdate.name = name
             moviesToUpdate.duration = duration
             moviesToUpdate.trailer = trailer
-            moviesToUpdate.genres = genres.map(genre => ({ id: genre.id, name: genre.name }))
+            moviesToUpdate.genres = genres//.map(genre => ({ id: genre.id, name: genre.name }))
             if (req.files?.image) {
                 const result = await uploadImage(req.files.image.tempFilePath);
                 //Delete old image in cloudinary 

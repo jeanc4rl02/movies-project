@@ -32,12 +32,13 @@ const moviesSchema = joi.object({
             secure_url: joi.string()
         }),
     genres: joi
-        .array()
+        .string()
+        /*.array()
         .items(joi.object({
             id: joi.number(),
             name: joi.string(),
         })
-        )
+        )*/
 
 });
 export default moviesSchema;

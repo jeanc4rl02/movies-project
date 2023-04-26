@@ -28,16 +28,21 @@ const cache = apicache.middleware;
  *              image:
  *                  type: file
  *                  description: image of the movie.
+ *              genres:
+ *                  type: string
+ *                  description: arrayObject parse to string of genres data.
  *          required: 
  *              - name
  *              - trailer
  *              - duration
+ *              - genres
  *          example:
  *              id: 1
  *              name: Mario
  *              duration: 1h 23min
  *              trailer: enlace
  *              image: (file)
+ *              genres: [{"id":1,"name":"campo 1"},{"id":2,"name":"campo 2"}]
  *      Empty:
  *          type: object
  *          properties:
