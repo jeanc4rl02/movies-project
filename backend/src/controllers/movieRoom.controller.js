@@ -60,6 +60,21 @@ export const getAllMovieRoomByMovieId = async(req, res) => {
 }
 
 
+export const getAllMovieRoomByRoomId = async(req, res) => {
+    const {id} = req.params
+    const movieRoom = await movieRoomModel.findAll({
+        where: {room_id: id},
+        include: [
+            {model: roomModel}, 
+            {model: moviesModel}],
+        attributes: {
+            exclude: ['room_id', 'movie_id']
+        }
+    })
+    movieRoom.length != 0 ? response(200, RESPONSE.OK, movieRoom, res ) : response(404, RESPONSE.NO_DATA_ID, RESPONSE.NO_DATA, res);
+}
+
+
 export const createMovieRoom = async (req, res) => {
     const { vip, general, preferential, hour, start_date, end_date, movie_id, room_id} = req.body;
     const dataByRooms = await movieRoomModel.findAll({where: {room_id}});
