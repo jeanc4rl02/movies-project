@@ -24,3 +24,15 @@ export const createAllTickets = (general, preferential, vip, id) => {
         console.log(error)
     }
 }
+
+export const validateIfHourExistsInDatabase = (array, hour) => {
+    try {
+       let exists;
+        const hourExists = array.find(movieRoom => movieRoom.hour == `${hour}:00`);
+        hourExists ? exists = true : exists = false;
+        return exists; 
+    } catch (error) {
+        console.log(error);
+    }
+    
+}
