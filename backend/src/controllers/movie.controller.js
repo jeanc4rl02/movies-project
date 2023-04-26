@@ -15,6 +15,7 @@ export const createmovies = async (req, res) => {
         trailer: req.body.trailer,
         genres: JSON.parse(req.body.genres)
     }
+    let gen = req.body.genres.map(genre => ({ id: genre.id, name: genre.name }));
     console.log(req.body)
     const { name, duration, trailer, genres } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
@@ -34,15 +35,16 @@ export const createmovies = async (req, res) => {
                     name,
                     duration,
                     trailer,
-                    genres: genres.map(genre => ({ id: genre.id, name: genre.name })),
                     image: {},
                 }
                 const isAnyFile = req.files?.image;
                 const pathToUpload = req.files.image.tempFilePath;
                 const result = await uploadToCloudinary(isAnyFile, pathToUpload);
                 newmovie.image = result;
+                const news = await moviesModel.create(newmovie);
+                news.set(gen)
                 await Promise.all([
-                    moviesModel.create(newmovie),
+                    news,
                     fs.unlink(pathToUpload)
                 ])
                 response(201, RESPONSE.OK, newmovie, res)

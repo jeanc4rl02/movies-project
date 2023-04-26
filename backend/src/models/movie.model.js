@@ -42,12 +42,12 @@ const moviesModel = cinemaDatabase.define('movie', {
         timestamps: true
     });
 
-/*moviesModel.belongsToMany(genresModel, {
+moviesModel.belongsToMany(genresModel, {
     through: 'gendersas',
-});*/
-/*genresModel.belongsToMany(moviesModel, {
+});
+genresModel.belongsToMany(moviesModel, {
     through: 'gendersas',
-});*/
+});
 /*const User_Profile = sequelize.define('User_Profile', {
     selfGranted: DataTypes.BOOLEAN
   }, { timestamps: false });
