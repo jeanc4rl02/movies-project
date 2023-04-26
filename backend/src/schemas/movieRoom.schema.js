@@ -13,11 +13,16 @@ const movieRoomSchema = joi.object({
     preferential: joi.number()
         .min(1)
         .required(),
-    hour: joi.string().regex(/^([0-9]{2})\:([0-9]{2})$/),
-    start_date: joi.date(),
+    hour: joi.string()
+        .required()
+        .regex(/^([0-9]{2})\:([0-9]{2})$/),
+    start_date: joi.date()
+        .required(),
     end_date: joi.date(),
-    movie_id: joi.number(),
-    room_id: joi.number(),
+    movie_id: joi.number()
+        .required(),
+    room_id: joi.number()
+        .required(),
 });
     
 export default movieRoomSchema;
