@@ -6,7 +6,8 @@ export const RESPONSE = Object.freeze({
     NO_DATA_ID: `At the moment we have no item with that id to show. Please make sure that the provided id exists in the database.`,
     NO_DATA: 'No data',
     EMPTY: `Propertie logo cannot be empty.`,
-    DELETE_OK: `The item was successfully deleted.`
+    DELETE_OK: `The item was successfully deleted.`,
+    HOUR_EXIST: `The room is not available because the time has already been set.`
 })
 
 export const response = (code, message, body = 'No data', res) => {

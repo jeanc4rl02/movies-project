@@ -4,7 +4,7 @@ import paginationSchema from '../schemas/pagination.schema.js';
 import {response, RESPONSE} from '../utils/response.util.js'
 import roomModel from '../models/room.model.js';
 import moviesModel from '../models/movie.model.js';
-import { createAllTickets } from '../utils/movieRoom.util.js';
+import { createAllTickets, validateIfHourExistsInDatabase } from '../utils/movieRoom.util.js';
 
 export const getAllMovieRooms = async(req, res) => {
     let movieRooms;
@@ -62,9 +62,11 @@ export const getAllMovieRoomByMovieId = async(req, res) => {
 
 export const createMovieRoom = async (req, res) => {
     const { vip, general, preferential, hour, start_date, end_date, movie_id, room_id} = req.body;
+    const dataByRooms = await movieRoomModel.findAll({where: {room_id}});
+    const hourAlreadyExists = await validateIfHourExistsInDatabase(dataByRooms, hour)
     const {error, value} = await movieRoomSchema.validate(req.body, {abortEarly: false});
-    if(error){
-        response(400, error.details[0].message, RESPONSE.NO_DATA, res)
+    if(error || hourAlreadyExists){
+        response(400, error ? error.details[0].message : RESPONSE.HOUR_EXIST, RESPONSE.NO_DATA, res)
     } else {
         try {
             const newMovieRoom = {hour, start_date, end_date, movie_id, room_id};
