@@ -16,7 +16,7 @@ const syncDatabase = async () => {
 	// Try to sync the database
 	try {
 		// Sync the database
-		await movieModel.sync({force: true});
+		await movieModel.sync();
 		await genreModel.sync();
 		await userModel.sync();
 		await cinemaModel.sync(); 

@@ -24,7 +24,7 @@ const moviesSchema = joi.object({
     trailer: joi
         .string()
         .min(1)
-        .max(50)
+        .max(250)
         .required(),
     image: joi
         .object({
