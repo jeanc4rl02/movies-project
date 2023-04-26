@@ -163,15 +163,15 @@ class TicketController {
         // Create a response
         let response;
         // Get the tickets data and ids
-        const { tickets: ticketsId, data: ticketData } = req.body;
+        const { tickets, data } = req.body;
         // Try to validate the ticket data
         try {
             // Validate the ticket data
-            await ticketUpdateSchema.validateAsync(ticketData);
+            await ticketUpdateSeveralSchema.validateAsync({ tickets, data });
                 // Try to update the ticket
             try {
                 // Update the tickets
-                await ticketsId.map(id => this._ticketService.updateTicket(id, ticketData));
+                await tickets.map(id => this._ticketService.updateTicket(id, data));
                 // Set the response
                 response = { status: 200, message: 'Tickets updated'};
             }

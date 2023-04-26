@@ -123,7 +123,7 @@ class UserRouter {
          *       $ref: '#/components/schemas/User'
          *      example:
          *       email: "admin@email.com"
-         *       pin: "contraseña123"
+         *       password: "contraseña123"
          *   responses:
          *    200:
          *     description: Login successful
