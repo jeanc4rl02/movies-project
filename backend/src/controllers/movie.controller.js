@@ -3,19 +3,21 @@ import moviesModel from '../models/movie.model.js';
 import genresModel from '../models/genre.model.js';
 
 import { uploadImage, deleteImage } from '../config/cloudinary.config.js';
+import {response, uploadToCloudinary, RESPONSE} from '../utils/response.util.js'
 import fs from 'fs-extra';
 import paginationSchema from '../schemas/pagination.schema.js';
 
 export const createmovies = async (req, res) => {
-    /*console.log(req.body)
-    req.body = {
+    console.log(req.body)
+    /*req.body = {
         name: req.body.name,
         duration: req.body.duration,
         trailer: req.body.trailer,
-        id_genres: 1//JSON.parse(req.body.id_genres)
+        genres: JSON.parse(req.body.genres)
     }
+    let gen = req.body.genres.map(genre => ({ id: genre.id, name: genre.name }));
     console.log(req.body)*/
-    const { name, duration, trailer, id_genres } = req.body;
+    const { name, duration, trailer, genres } = req.body;
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
         res.status(400).json({
@@ -23,31 +25,32 @@ export const createmovies = async (req, res) => {
         });
     } else {
         if (name == null || duration == null ||
-            trailer == null) {
+            trailer == null || genres == null) {///////////////
             res.status(400).json({
                 message: 'field incomplete.'
             });
         } else {
             try {
                 const newmovie = {
-                    name, 
-                    duration, 
-                    trailer, 
-                    image: {}, 
+                    name,
+                    duration,
+                    trailer,
+                    image: {},
+                    genres,///////////////
                 }
-                if (req.files?.image) {
-                    const result = await uploadImage(req.files.image.tempFilePath);
-                    newmovie.image = {
-                        public_id: result.public_id,
-                        secure_url: result.secure_url
-                    }
-                }
-                await moviesModel.create(newmovie);
-                await fs.unlink(req.files.image.tempFilePath);
-                res.status(201).json({
-                    message: 'Successful request',
-                    body: newmovie
-                })
+                const isAnyFile = req.files?.image;
+                const pathToUpload = req.files.image.tempFilePath;
+                const result = await uploadToCloudinary(isAnyFile, pathToUpload);
+                newmovie.image = result;
+                //const news = await moviesModel.create(newmovie);
+                //news.set(gen)
+                //console.log(news)
+                await Promise.all([
+                    //news,
+                    await moviesModel.create(newmovie),
+                    fs.unlink(pathToUpload)
+                ])
+                response(201, RESPONSE.OK, newmovie, res)
             } catch (error) {
                 console.log(error.message);
                 res.status(400).json({ message: error.message });
@@ -64,9 +67,9 @@ export const getmovies = async (req, res) => {
     (error) ?
         movies = await moviesModel.findAll() :
         movies = await moviesModel.findAll({
-            offset, 
-            limit , 
-            
+            offset,
+            limit,
+
         });
     (movies.length != 0) ?
         res.send({
@@ -95,10 +98,17 @@ export const updatemovies = async (req, res) => {
     const moviesToUpdate = await moviesModel.findByPk(id);
     if (moviesToUpdate) {
         try {
-            const { name, duration, trailer } = req.body;
+            /*req.body = {
+                name: req.body.name,
+                duration: req.body.duration,
+                trailer: req.body.trailer,
+                genres: JSON.parse(req.body.genres)
+            }*/
+            const { name, duration, trailer, genres } = req.body;
             moviesToUpdate.name = name
             moviesToUpdate.duration = duration
             moviesToUpdate.trailer = trailer
+            moviesToUpdate.genres = genres//.map(genre => ({ id: genre.id, name: genre.name }))
             if (req.files?.image) {
                 const result = await uploadImage(req.files.image.tempFilePath);
                 //Delete old image in cloudinary 

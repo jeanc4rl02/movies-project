@@ -1,7 +1,18 @@
+// Description: This file contains the genres controller class
+// Author: JUan David Ospina Ortega
+
+//Importing the genres model
 import genresModel from '../models/genre.model.js';
+//Importing the genres schema
 import genresSchema from '../schemas/genre.schema.js';
+//Importing the pagination schema
 import paginationSchema from '../schemas/pagination.schema.js';
 
+//Create the genres class
+//class genresController {
+
+    //genres model instance
+    //genreModel = new genresModel();
 export const creategenres = async (req, res) => {
     const { name } = req.body;
     const { error, value } = await genresSchema.validate(req.body, { abortEarly: false });

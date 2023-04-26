@@ -14,7 +14,7 @@ const movieRoomModel = sequelize.define('movieRoom', {
     },
     end_date: {   
         type: DataTypes.DATE,
-        defaultValue: true 
+        allowNull: false,
     },
     hour: {
         type: DataTypes.TIME,

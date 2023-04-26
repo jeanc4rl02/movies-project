@@ -8,6 +8,7 @@ import genresModel from './genre.model.js';
 // Import datatypes from sequelize
 import { DataTypes } from 'sequelize';
 
+
 // Define account model
 const moviesModel = cinemaDatabase.define('movie', {
     id: {
@@ -31,21 +32,27 @@ const moviesModel = cinemaDatabase.define('movie', {
         type: DataTypes.JSON,
         allowNull: false,
     },
-    /*id_genres: {
-        type: DataTypes.ARRAY(DataTypes.JSON),
+    genres: {
+        type: DataTypes.STRING,//.ARRAY(DataTypes.STRING),
         allowNull: false
-    }*/
+    }
 },
-{
+    {
         tableName: 'movies',
         timestamps: true
-});/*
-genresModel.belongsToMany(moviesModel, {
-    through: 'id_genres',
-});
-moviesModel.belongsToMany(genresModel, {
-    through: 'id_genres',
-});*/
+    });
 
+/*moviesModel.belongsToMany(genresModel, {
+    through: 'gendersas',
+});
+genresModel.belongsToMany(moviesModel, {
+    through: 'gendersas',
+});*/
+/*const User_Profile = sequelize.define('User_Profile', {
+    selfGranted: DataTypes.BOOLEAN
+  }, { timestamps: false });
+  User.belongsToMany(Profile, { through: User_Profile });
+  Profile.belongsToMany(User, { through: User_Profile });*/
+// Exporting the schema
 // Export gender model
 export default moviesModel;
