@@ -10,20 +10,18 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 // Importing the swagger configuration
 import swaggerConfiguration from './config/swagger.config.js';
-// Importing the database connection test
+// Importing the database connection test and sync  
 import testDatabase from './database/test.database.js';
-// Importing the database sync
 import syncDatabase from './database/sync.database.js';
-// Importing the user router
+// Importing the routers
 import UserRouter from './routes/user.routes.js';
-// Importing the room router
 import RoomRouter from './routes/room.routes.js';
-// Importing the routes
 import cinemaRouter from './routes/cinema.routes.js'
-//Importing the gender router
 import genreRouter from './routes/genre.routes.js';
-//Importing the movie router
 import movieRouter from './routes/movie.routes.js';
+import ticketRouter from './routes/ticket.routes.js';
+//Importing the movie router
+import movieRoomRouter from './routes/movieRoom.routes.js';
 
 class App {
 
@@ -32,7 +30,8 @@ class App {
     // Routes
     routes = {
         userRoute: new UserRouter(),
-        roomRoute: new RoomRouter()
+        roomRoute: new RoomRouter(),
+        ticketRoute: new ticketRouter()
     }
 
     // The constructor method
@@ -42,6 +41,7 @@ class App {
         this.cinemaPath = '/api/v1/cinemas';
         this.genrePath = '/api/v1/genres';
         this.moviePath = '/api/v1/movies';
+        this.movieRoomPath = '/api/v1/movie-rooms'
         // Call the methods to configure the app
         this.setMiddlewares();
         // Define routes
@@ -60,10 +60,12 @@ class App {
         this.app.use('/api/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use('/api/v1/users', this.routes.userRoute.router);
         this.app.use('/api/v1/rooms', this.routes.roomRoute.router);
+        this.app.use('/api/v1/tickets', this.routes.ticketRoute.router);
         this.app.use(this.docPath, swaggerUi.serve, swaggerUi.setup(swaggerConfiguration));
         this.app.use(this.cinemaPath, cinemaRouter);
         this.app.use(this.genrePath, genreRouter);
         this.app.use(this.moviePath, movieRouter);
+        this.app.use(this.movieRoomPath, movieRoomRouter);
     }
     // Set database 
     setDatabase = async() => {
