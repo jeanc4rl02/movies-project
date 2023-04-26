@@ -60,6 +60,13 @@ class TicketRoutes {
             this._authUtil.validateRoleMiddleware(['administrator']),
             this._ticketController.updateTicket
         );
+        // Update several tickets
+        this._router.put(
+            '/',
+            this._authUtil.verifyTokenMiddleware,
+            this._authUtil.validateRoleMiddleware(['administrator']),
+            this._ticketController.updateSeveralTickets
+        );
         // Delete a ticket
         this._router.delete(
             '/:ticketId',
