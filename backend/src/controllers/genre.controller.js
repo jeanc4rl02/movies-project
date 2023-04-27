@@ -11,8 +11,8 @@ import paginationSchema from '../schemas/pagination.schema.js';
 //Create the genres class
 //class genresController {
 
-    //genres model instance
-    //genreModel = new genresModel();
+//genres model instance
+//genreModel = new genresModel();
 //function to  make a genre (insert)
 export const creategenres = async (req, res) => {
     //deconstructing request
@@ -64,7 +64,7 @@ export const getgenres = async (req, res) => {
 }
 
 //function to get a egnre (select where id)
-export const getOnegenres = async (req, res) => {    
+export const getOnegenres = async (req, res) => {
     //destructing id to select a genre 
     const { id } = req.params;
     //find the genre

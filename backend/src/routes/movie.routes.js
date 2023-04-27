@@ -66,13 +66,20 @@ const cache = apicache.middleware;
  *              message: string
  *          example:At the moment we have no movie with id: 4 to show. Please make sure that the provided id exists in the database.
  *  parameters:
- *      movieId:
+ *      id:
  *          in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: number
  *          description: Id of the movie.
+ *      token:
+ *          if: header
+ *          name: x-access-token
+ *          description: A token to access the API
+ *          schema:
+ *              type: string
+ *          require: true
  *      offset:
  *          in: path
  *          name: offset

@@ -2,8 +2,10 @@ import {Router} from 'express';
 import { creategenres, getgenres, getOnegenres, updategenres, deletegenres } from '../controllers/genre.controller.js';
 import apicache from 'apicache';
 
+import AuthUtil from '../utils/auth.util.js';
 const router = Router();
 const cache = apicache.middleware;
+const auth = new AuthUtil();
 
 /**
  * @swagger
@@ -26,7 +28,7 @@ const cache = apicache.middleware;
  *      genresNotFound:
  *          type: object
  *          properties: 
- *              msg: 
+ *              msg: nfg
  *              type: string
  *              description: not found genres
  *          example:
@@ -55,13 +57,13 @@ const cache = apicache.middleware;
  *              message: string
  *          example:At the moment we have no genres with id: 4 to show. Please make sure that the provided id exists in the database.
  *  parameters:
- *      genresId:
+ *      id:
  *          in: path
  *          name: id
  *          required: true
  *          schema:
- *              type: number
- *              description: Id of the genre.
+ *              type: string
+ *          description: Id of the genre.
  * 
  *      offset:
  *          in: path
@@ -113,7 +115,7 @@ const cache = apicache.middleware;
  *          schema:
  *              $ref:  '#/components/schemas/EmptyPost'                
  */
-router.post('/', creategenres);
+router.post('/', auth.verifyTokenMiddleware, creategenres);
 
 /**
  * @swagger
@@ -124,6 +126,7 @@ router.post('/', creategenres);
  *          parameters:
  *              - $ref: '#/components/parameters/limit'
  *              - $ref: '#/components/parameters/offset'
+ * 
  *          responses: 
  *              200:
  *                  description: the list of genres.
@@ -151,7 +154,7 @@ router.get('/', cache('2 minutes'), getgenres);
  *          summary: Get a genre by id
  *          tags: [genres]
  *          parameters:
- *              - $ref: '#/components/parameters/genreId'
+ *              - $ref: '#/components/parameters/id'
  *              - $ref: '#/components/parameters/limit'
  *              - $ref: '#/components/parameters/offset'
  *          responses: 
@@ -181,7 +184,8 @@ router.get('/:id', cache('2 minutes'), getOnegenres);
  *          summary: Update a genre by id.
  *          tags: [genres]
  *          parameters:
- *              - $ref: '#/components/parameters/genreId'
+ *              - $ref: '#/components/parameters/id'
+ *              - $ref: '#/components/parameters/token'
  *          requestBody:
  *              required: true
  *              content: 
@@ -201,6 +205,24 @@ router.get('/:id', cache('2 minutes'), getOnegenres);
  *                      application/json:
  *                          schema:
  *                              $ref: '#/components/schemas/EmptyPut'
+ *              401:
+ *               description: Unauthorized, invalid token
+ *               content:
+ *                application/json:
+ *                 schema:
+ *                  $ref: '#/components/schemas/Response'
+ *                 example:
+ *                  status: 401
+ *                  message: Unauthorized, invalid token
+ *              403:
+ *               description: No token provided
+ *               content:
+ *                application/json:
+ *                 schema:
+ *                  $ref: '#/components/schemas/Response'
+ *                 example:
+ *                  status: 403
+ *                  message: No token provided
  *              404:
  *                  description: There is no genre registered with the provided id.
  *                  content:
@@ -208,7 +230,7 @@ router.get('/:id', cache('2 minutes'), getOnegenres);
  *                          schema:
  *                              $ref: '#/components/schemas/noDataPut'
  */
-router.put('/:id', updategenres);
+router.put('/:id', auth.verifyTokenMiddleware, updategenres);
 
 /**
  * @swagger
@@ -217,7 +239,8 @@ router.put('/:id', updategenres);
  *          summary: Delete a genre by id.
  *          tags: [genres]
  *          parameters:
- *              - $ref: '#/components/parameters/genreId'
+ *              - $ref: '#/components/parameters/id'
+ *              - $ref: '#/components/parameters/token'
  *          responses:
  *              200:
  *                  description: The removal of the genre has been successfully completed.
@@ -227,9 +250,27 @@ router.put('/:id', updategenres);
  *                              $ref: '#/components/schemas/genre'
  *              500:
  *                  description: Server error.
+ *              401:
+ *               description: Unauthorized, invalid token
+ *               content:
+ *                application/json:
+ *                 schema:
+ *                  $ref: '#/components/schemas/Response'
+ *                 example:
+ *                  status: 401
+ *                  message: Unauthorized, invalid token
+ *              403:
+ *               description: No token provided
+ *               content:
+ *                application/json:
+ *                 schema:
+ *                  $ref: '#/components/schemas/Response'
+ *                 example:
+ *                  status: 403
+ *                  message: No token provided
  *              404:
  *                  description: There is no genre registered with the provided id.
  */
-router.delete('/:id', deletegenres);
+router.delete('/:id', auth.verifyTokenMiddleware, deletegenres);
 
 export default router;

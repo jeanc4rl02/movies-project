@@ -1,3 +1,6 @@
+// Description: This file contains the movies controller class
+// Author: Juan David Ospina Ortega
+
 //Importing movie scheme
 import moviesSchema from '../schemas/movie.schema.js';
 //Importing movie model
@@ -97,7 +100,7 @@ export const getmovies = async (req, res) => {
         });
 }
 
-//function to get a movie
+//function to get a movie (select where id)
 export const getOnemovies = async (req, res) => {
     //destructing id to select a movie 
     const { id } = req.params;
@@ -112,7 +115,7 @@ export const getOnemovies = async (req, res) => {
         });
 }
 
-//update movies function
+//update movies function (update)
 export const updatemovies = async (req, res) => {
     //destructing id to select a movie 
     const { id } = req.params;
@@ -163,7 +166,7 @@ export const updatemovies = async (req, res) => {
     }
 }
 
-//delete movies function
+//delete movies function (delete)
 export const deletemovies = async (req, res) => {
     //destructing id to select a movie 
     const { id } = req.params;
