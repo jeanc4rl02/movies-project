@@ -1,12 +1,16 @@
+//Importing movie scheme
 import moviesSchema from '../schemas/movie.schema.js';
+//Importing movie model
 import moviesModel from '../models/movie.model.js';
-import genresModel from '../models/genre.model.js';
 
+//Importing couldinary functions
 import { uploadImage, deleteImage } from '../config/cloudinary.config.js';
-import {response, uploadToCloudinary, RESPONSE} from '../utils/response.util.js'
+import { response, uploadToCloudinary, RESPONSE } from '../utils/response.util.js'
 import fs from 'fs-extra';
+//importing pagination scheme
 import paginationSchema from '../schemas/pagination.schema.js';
 
+//function to  make a movie (insert)
 export const createmovies = async (req, res) => {
     console.log(req.body)
     /*req.body = {
@@ -17,13 +21,17 @@ export const createmovies = async (req, res) => {
     }
     let gen = req.body.genres.map(genre => ({ id: genre.id, name: genre.name }));
     console.log(req.body)*/
+    //deconstructing request
     const { name, duration, trailer, genres } = req.body;
+    //validate information
     const { error, value } = await moviesSchema.validate(req.body, { abortEarly: false });
     if (error) {
+        //show error
         res.status(400).json({
             message: error.details[0].message
         });
     } else {
+        //all fields here, are required
         if (name == null || duration == null ||
             trailer == null || genres == null) {///////////////
             res.status(400).json({
@@ -31,22 +39,25 @@ export const createmovies = async (req, res) => {
             });
         } else {
             try {
+                //make a new object to send request
                 const newmovie = {
                     name,
                     duration,
                     trailer,
                     image: {},
-                    genres,///////////////
+                    genres,/////////////////
                 }
+                //checking and uploading image with couldinary
                 const isAnyFile = req.files?.image;
                 const pathToUpload = req.files.image.tempFilePath;
                 const result = await uploadToCloudinary(isAnyFile, pathToUpload);
                 newmovie.image = result;
-                //const news = await moviesModel.create(newmovie);
-                //news.set(gen)
-                //console.log(news)
+                ////const news = await moviesModel.create(newmovie);
+                ////news.set(gen)
+                ////console.log(news)
+                //create a new movie
                 await Promise.all([
-                    //news,
+                    ////news,
                     await moviesModel.create(newmovie),
                     fs.unlink(pathToUpload)
                 ])
@@ -59,11 +70,14 @@ export const createmovies = async (req, res) => {
     }
 }
 
+//function to consult all movies (select)
 export const getmovies = async (req, res) => {
     let movies;
+    //deconstructing limits
     const { limit, offset } = req.query;
     const { error, value } = await paginationSchema.validate(req.query, { abortEarly: false });
 
+    //On a error consult all data
     (error) ?
         movies = await moviesModel.findAll() :
         movies = await moviesModel.findAll({
@@ -71,6 +85,8 @@ export const getmovies = async (req, res) => {
             limit,
 
         });
+
+    //amount of movies
     (movies.length != 0) ?
         res.send({
             message: 'Successful request',
@@ -81,9 +97,12 @@ export const getmovies = async (req, res) => {
         });
 }
 
+//function to get a movie
 export const getOnemovies = async (req, res) => {
+    //destructing id to select a movie 
     const { id } = req.params;
     const movies = await moviesModel.findByPk(id);
+    //On a error consult all data
     (movies) ?
         res.send({
             message: 'Successful request',
@@ -93,9 +112,13 @@ export const getOnemovies = async (req, res) => {
         });
 }
 
+//update movies function
 export const updatemovies = async (req, res) => {
+    //destructing id to select a movie 
     const { id } = req.params;
+    //select the movie to update
     const moviesToUpdate = await moviesModel.findByPk(id);
+    //if a movie found
     if (moviesToUpdate) {
         try {
             /*req.body = {
@@ -104,11 +127,14 @@ export const updatemovies = async (req, res) => {
                 trailer: req.body.trailer,
                 genres: JSON.parse(req.body.genres)
             }*/
+            //deconstructing request
             const { name, duration, trailer, genres } = req.body;
+            //add data to object
             moviesToUpdate.name = name
             moviesToUpdate.duration = duration
             moviesToUpdate.trailer = trailer
             moviesToUpdate.genres = genres//.map(genre => ({ id: genre.id, name: genre.name }))
+            //if the image can change
             if (req.files?.image) {
                 const result = await uploadImage(req.files.image.tempFilePath);
                 //Delete old image in cloudinary 
@@ -120,6 +146,7 @@ export const updatemovies = async (req, res) => {
                 //Delete temporal files
                 await fs.unlink(req.files.image.tempFilePath)
             }
+            //add new movie params
             await moviesToUpdate.save();
             res.status(200).json({
                 message: 'Successful request',
@@ -136,16 +163,21 @@ export const updatemovies = async (req, res) => {
     }
 }
 
+//delete movies function
 export const deletemovies = async (req, res) => {
+    //destructing id to select a movie 
     const { id } = req.params;
     const moviesToDelete = await moviesModel.findByPk(id);
 
+    //if a movie found
     if (moviesToDelete) {
         try {
+            //the request is send
             await deleteImage(moviesToDelete.image.public_id);
             await moviesModel.destroy({
                 where: { id }
             })
+            //On a error deleted the movie
             res.status(200).json({
                 message: `The movies with id: ${id} was successfully deleted.`
             });
