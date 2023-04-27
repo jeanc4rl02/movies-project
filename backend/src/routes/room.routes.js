@@ -234,6 +234,8 @@ class RoomRouter {
         *   description: Create a room
         *   tags: 
         *    - Rooms
+        *   parameters:
+        *    - $ref: '#/components/parameters/token'
         *   requestBody:
         *    required: true
         *    content:
@@ -291,6 +293,7 @@ class RoomRouter {
             '/',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._roomController.createRoom
         );
         /**
@@ -366,6 +369,7 @@ class RoomRouter {
             '/:id',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._roomController.updateRoom
         );
         /**
@@ -421,6 +425,7 @@ class RoomRouter {
             '/:id',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._roomController.deleteRoom
         );
     }

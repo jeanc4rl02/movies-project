@@ -235,7 +235,11 @@ class UserRouter {
         *        status: 500
         *        message: Error creating user
         */
-        this._router.post('/', this._userController.createUser);
+        this._router.post(
+            '/',
+            this._userController.createUser,
+            this._expressCacheUtil.resetCacheMiddleware,
+        );
         /**
          * @swagger
          * /api/v1/users:
@@ -367,6 +371,7 @@ class UserRouter {
             '/:id', 
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._userController.updateUser
         );
         /**
@@ -422,6 +427,7 @@ class UserRouter {
             '/:id', 
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._userController.deleteUser
         );
     }

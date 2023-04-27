@@ -239,6 +239,8 @@ class TicketRoutes {
         *   description: Create a ticket
         *   tags: 
         *    - Tickets
+        *   parameters:
+        *    - $ref: '#/components/parameters/token'
         *   requestBody:
         *    required: true
         *    content:
@@ -296,6 +298,7 @@ class TicketRoutes {
             '/',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.createTicket
         );
         /**
@@ -371,6 +374,7 @@ class TicketRoutes {
             '/:ticketId',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.updateTicket
         );
         /**
@@ -447,6 +451,7 @@ class TicketRoutes {
             '/',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.updateSeveralTickets
         );
         /**
@@ -502,6 +507,7 @@ class TicketRoutes {
             '/:ticketId',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.deleteTicket
         );
     }
