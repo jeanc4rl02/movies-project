@@ -76,6 +76,20 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
  *    schema:
  *     type: string
  *    required: true
+ *   limit:
+ *    in: query
+ *    name: limit
+ *    description: The limit of the query
+ *    schema:
+ *     type: integer
+ *    required: false
+ *   page:
+ *    in: query
+ *    name: page
+ *    description: The page of the query
+ *    schema:
+ *     type: integer
+ *    required: false
  * 
 */
 
@@ -250,6 +264,8 @@ class UserRouter {
          *    - Users
          *   parameters:
          *    - $ref: '#/components/parameters/token'
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Users found successfully
