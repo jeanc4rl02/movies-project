@@ -81,6 +81,20 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
  *     schema:
  *      type: string
  *     required: true
+ *    limit:
+ *     in: query
+ *     name: limit
+ *     description: The limit of the query
+ *     schema:
+ *      type: integer
+ *     required: false
+ *    page:
+ *     in: query
+ *     name: page
+ *     description: The page of the query
+ *     schema:
+ *      type: integer
+ *     required: false
  * 
 */
 
@@ -120,7 +134,8 @@ class RoomRouter {
          *   tags: 
          *     - Rooms
          *   parameters:
-         *    - $ref: '#/components/parameters/token'
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Rooms found successfully
@@ -163,8 +178,6 @@ class RoomRouter {
         */
         this._router.get(
             '/', 
-            this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['client', 'seller', 'administrator']),
             this._expressCacheUtil.setCacheMiddleware(20), 
             this._roomController.getAllRooms
         );
@@ -177,8 +190,9 @@ class RoomRouter {
          *   tags: 
          *     - Rooms
          *   parameters:
-         *    - $ref: '#/components/parameters/token'
          *    - $ref: '#/components/parameters/id'  
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Rooms found successfully
@@ -221,8 +235,6 @@ class RoomRouter {
         */
         this._router.get(
             '/cinema/:id',
-            this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['client', 'seller', 'administrator']),
             this._expressCacheUtil.setCacheMiddleware(20),
             this._roomController.getRoomsByCinema
         );

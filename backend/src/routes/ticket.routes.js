@@ -86,6 +86,20 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
  *     schema:
  *      type: string
  *     required: true
+ *    limit:
+ *     in: query
+ *     name: limit
+ *     description: The limit of the query
+ *     schema:
+ *      type: integer
+ *     required: false
+ *    page:
+ *     in: query
+ *     name: page
+ *     description: The page of the query
+ *     schema:
+ *      type: integer
+ *     required: false
  * 
 */
 
@@ -125,7 +139,8 @@ class TicketRoutes {
          *   tags: 
          *     - Tickets
          *   parameters:
-         *    - $ref: '#/components/parameters/token'
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Tickets found successfully
@@ -168,8 +183,6 @@ class TicketRoutes {
         */
         this._router.get(
             '/', 
-            this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['administrator', 'seller', 'client']),
             this._expressCacheUtil.setCacheMiddleware(20),
             this._ticketController.getAllTickets
         );
@@ -182,8 +195,9 @@ class TicketRoutes {
          *   tags: 
          *    - Tickets
          *   parameters:
-         *    - $ref: '#/components/parameters/token'
          *    - $ref: '#/components/parameters/id'  
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Tickets found successfully
@@ -226,8 +240,6 @@ class TicketRoutes {
         */
         this._router.get(
             '/movieRoom/:id',
-            this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['administrator', 'seller', 'client']),
             this._expressCacheUtil.setCacheMiddleware(20),
             this._ticketController.getTicketsByMovieRoomId
         );
@@ -373,7 +385,7 @@ class TicketRoutes {
         this._router.put(
             '/:ticketId',
             this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['administrator']),
+            this._authUtil.validateRoleMiddleware(['administrator, seller, client']),
             this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.updateTicket
         );
@@ -450,7 +462,7 @@ class TicketRoutes {
         this._router.put(
             '/',
             this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['administrator']),
+            this._authUtil.validateRoleMiddleware(['administrator, seller, client']),
             this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.updateSeveralTickets
         );
