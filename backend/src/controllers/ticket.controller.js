@@ -5,6 +5,8 @@
 import TicketService from '../services/ticket.service.js';
 // Import pagination schema
 import paginationSchema from '../schemas/pagination.schema.js';
+// Import ticket schemas
+import { ticketCreateSchema, ticketUpdateSchema, ticketUpdateSeveralSchema } from '../schemas/ticket.schema.js';
 
 // Create the ticket controller class
 class TicketController {
@@ -90,19 +92,31 @@ class TicketController {
         let response;
         // Get the ticket data
         const ticketData = req.body;
-        // Try to create the ticket
+        // Try to validate the ticket data
         try {
-            // Create the ticket
-            const ticketDB = await this._ticketService.createTicket(ticketData);
-            // Set the response
-            response = { status: 201, message: 'Ticket created', data: ticketDB };
+            // Validate the ticket data
+            await ticketCreateSchema.validateAsync(ticketData);
+             // Try to create the ticket
+            try {
+                // Create the ticket
+                const ticketDB = await this._ticketService.createTicket(ticketData);
+                // Set the response
+                response = { status: 201, message: 'Ticket created', data: ticketDB };
+            }
+            // Catch the error
+            catch (error) {
+                // Log the error
+                console.log(error);
+                // Set the response
+                response = { status: 500, message: 'Error creating ticket' };
+            }
         }
         // Catch the error
         catch (error) {
             // Log the error
             console.log(error);
             // Set the response
-            response = { status: 400, message: error.message };
+            response = { status: 400, message: error.details[0].message };
         }
         // Return the response
         res.status(response.status).send(response);
@@ -115,19 +129,66 @@ class TicketController {
         const ticketData = req.body;
         // Get the ticket id
         const { ticketId } = req.params;
-        // Try to update the ticket
+        // Try to validate the ticket data
         try {
-            // Update the ticket
-            const ticketDB = await this._ticketService.updateTicket(ticketId, ticketData);
-            // Set the response
-            response = { status: 200, message: 'Ticket updated', data: ticketDB };
+            // Validate the ticket data
+            await ticketUpdateSchema.validateAsync(ticketData);
+            // Try to update the ticket
+            try {
+                // Update the ticket
+                const ticketDB = await this._ticketService.updateTicket(ticketId, ticketData);
+                // Set the response
+                response = { status: 200, message: 'Ticket updated', data: ticketDB };
+            }
+            // Catch the error
+            catch (error) {
+                // Log the error
+                console.log(error);
+                // Set the response
+                response = { status: 500, message: 'Error updating ticket' };
+            }
         }
         // Catch the error
         catch (error) {
             // Log the error
             console.log(error);
             // Set the response
-            response = { status: 400, message: error.message };
+            response = { status: 400, message: error.details[0].message };
+        }
+        // Return the response
+        res.status(response.status).send(response);
+    }
+    // Update several tickets
+    updateSeveralTickets = async (req, res) => {
+        // Create a response
+        let response;
+        // Get the tickets data and ids
+        const { tickets, data } = req.body;
+        // Try to validate the ticket data
+        try {
+            // Validate the ticket data
+            await ticketUpdateSeveralSchema.validateAsync({ tickets, data });
+                // Try to update the ticket
+            try {
+                // Update the tickets
+                await tickets.map(id => this._ticketService.updateTicket(id, data));
+                // Set the response
+                response = { status: 200, message: 'Tickets updated'};
+            }
+            // Catch the error
+            catch (error) {
+                // Log the error
+                console.log(error);
+                // Set the response
+                response = { status: 500, message: 'Error updating tickets'};
+            }
+        }
+        // Catch the error
+        catch (error) {
+            // Log the error
+            console.log(error);
+            // Set the response
+            response = { status: 400, message: error.details[0].message };
         }
         // Return the response
         res.status(response.status).send(response);
