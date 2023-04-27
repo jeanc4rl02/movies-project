@@ -74,21 +74,13 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
  *     schema:
  *      type: string
  *     required: true
- *   
- *   id:
- *    in: path
- *    name: id
- *    description: The id on database
- *    schema:
- *     type: string
- *    required: true
- *   cinemaId:
- *    in: path
- *    name: cinemaId
- *    description: The cinema id on database
- *    schema:
- *     type: string
- *    required: true
+ *    id:
+ *     in: path
+ *     name: id
+ *     description: The id on database
+ *     schema:
+ *      type: string
+ *     required: true
  * 
 */
 
@@ -178,7 +170,7 @@ class RoomRouter {
         );
         /**
          * @swagger
-         * /api/v1/rooms/{cinemaId}:
+         * /api/v1/rooms/cinema/{id}:
          *  get:
          *   summary: Get all rooms by cinema id
          *   description: Get all rooms by cinema id
@@ -186,7 +178,7 @@ class RoomRouter {
          *     - Rooms
          *   parameters:
          *    - $ref: '#/components/parameters/token'
-         *    - $ref: '#/components/parameters/cinemaId'  
+         *    - $ref: '#/components/parameters/id'  
          *   responses:
          *    200:
          *     description: Rooms found successfully
@@ -228,7 +220,7 @@ class RoomRouter {
          * 
         */
         this._router.get(
-            '/cinema/:cinemaId',
+            '/cinema/:id',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['client', 'seller', 'administrator']),
             this._expressCacheUtil.setCacheMiddleware(20),

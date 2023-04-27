@@ -78,7 +78,7 @@ class TicketService {
                     order: [['createdAt', 'DESC']],
                 });
                 // Set the total of tickets
-                const totalTickets = await this._ticketModel.count({ where: { movieRoomId } });
+                const totalTickets = await this._ticketModel.count({ where: { movieRoomId: movieRoomId } });
                 // Set the total of pages
                 const totalPages = Math.ceil(totalTickets / limit);
                 // Create the response
@@ -88,7 +88,7 @@ class TicketService {
             else{
                 // Get tickets by movie room id
                 const ticketsDB = await this._ticketModel.findAll({
-                    where: { movieRoomId },
+                    where: { movieRoomId: movieRoomId },
                     include: [{ model: this._movieRoomModel, as: 'movieRoom' }],
                     attributes: { exclude: ['movieRoomId'] },
                 });

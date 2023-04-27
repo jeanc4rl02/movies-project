@@ -79,20 +79,13 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
  *     schema:
  *      type: string
  *     required: true
- *   id:
- *    in: path
- *    name: id
- *    description: The id on database
- *    schema:
- *     type: integer
- *    required: true
- *   movieRoomId:
- *    in: path
- *    name: movieRoomId
- *    description: The movie room id on database
- *    schema:
- *     type: integer
- *    required: true
+ *    id:
+ *     in: path
+ *     name: id
+ *     description: The id on database
+ *     schema:
+ *      type: string
+ *     required: true
  * 
 */
 
@@ -182,15 +175,15 @@ class TicketRoutes {
         );
         /**
          * @swagger
-         * /api/v1/tickets/{movieRoomId}:
+         * /api/v1/tickets/movieRoom/{id}:
          *  get:
          *   summary: Get all tickets by movie room id
          *   description: Get all tickets by movie room id
          *   tags: 
-         *     - Tickets
+         *    - Tickets
          *   parameters:
          *    - $ref: '#/components/parameters/token'
-         *    - $ref: '#/components/parameters/cinemaId'  
+         *    - $ref: '#/components/parameters/id'  
          *   responses:
          *    200:
          *     description: Tickets found successfully
@@ -232,7 +225,7 @@ class TicketRoutes {
          * 
         */
         this._router.get(
-            '/movieRoom/:movieRoomId',
+            '/movieRoom/:id',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator', 'seller', 'client']),
             this._expressCacheUtil.setCacheMiddleware(20),
