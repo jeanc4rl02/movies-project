@@ -86,6 +86,11 @@ const cache = apicache.middleware
  *                  type: integer
  *                  description: Room where it will be presented at that time.
  *          example:
+ *              id: 1
+ *              hour: 14:00
+ *              start_date: 2023-04-26
+ *              end_date: 2023-05-26
+ *              movie_id: 1
  *              room_id: 1
  *      Empty:
  *          type: object
@@ -166,7 +171,7 @@ const cache = apicache.middleware
  *                          schema:
  *                              type: array
  *                              items: 
- *                                  $ref: '#/components/schemas/MovieRoom'
+ *                                  $ref: '#/components/schemas/MovieRoomPut'
  *              404:
  *                  description: the list of cinemas is empty
  *                  content:
@@ -196,7 +201,7 @@ movieRoomRouter.get('/', cache('1 minutes'), getAllMovieRooms);
  *                          schema:
  *                              type: array
  *                              items: 
- *                                  $ref: '#/components/schemas/MovieRoom'
+ *                                  $ref: '#/components/schemas/MovieRoomPut'
  *              404:
  *                  description: The id provided doesn't exist in the database.
  *                  content:
@@ -224,7 +229,7 @@ movieRoomRouter.get('/:id', cache('2 minutes'), getOneMovieRoom);
  *                          schema:
  *                              type: array
  *                              items: 
- *                                  $ref: '#/components/schemas/MovieRoom'
+ *                                  $ref: '#/components/schemas/MovieRoomPut'
  *              404:
  *                  description: The id provided doesn't exist in the database.
  *                  content:
@@ -252,7 +257,7 @@ movieRoomRouter.get('/movie/:id', getAllMovieRoomByMovieId);
  *                          schema:
  *                              type: array
  *                              items: 
- *                                  $ref: '#/components/schemas/MovieRoom'
+ *                                  $ref: '#/components/schemas/MovieRoomPut'
  *              404:
  *                  description: The id provided doesn't exist in the database.
  *                  content:
