@@ -14,7 +14,8 @@ class ExpressCache {
     setCacheMiddleware = (duration) => {
         return (req, res, next) => {
             // Set the key
-            const key = 'express-cache' + req.url + `-${req.method}`;
+            const key = 'express-cache' + req.originalUrl + '/';
+            console.log(key);
             // Get the cached body
             const cachedResponse = this.cache.get(key);
             // If the cached body exists, send it
@@ -35,6 +36,19 @@ class ExpressCache {
                 next();
             }
         };
+    }
+    // Reset the cache
+    resetCacheMiddleware = (req, res, next) => {
+        // Set the key
+        const key = 'express-cache' + req.baseUrl + req.path;
+        // Get all the keys
+        const keys = this.cache.keys();
+        // Filter every key that contains the key
+        const filteredKeys = keys.filter((k) => k.includes(key));
+        // Delete the keys
+        this.cache.del(filteredKeys);
+        // Next middleware
+        next();
     }
 }
 

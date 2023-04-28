@@ -76,6 +76,20 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
  *    schema:
  *     type: string
  *    required: true
+ *   limit:
+ *    in: query
+ *    name: limit
+ *    description: The limit of the query
+ *    schema:
+ *     type: integer
+ *    required: false
+ *   page:
+ *    in: query
+ *    name: page
+ *    description: The page of the query
+ *    schema:
+ *     type: integer
+ *    required: false
  * 
 */
 
@@ -235,7 +249,11 @@ class UserRouter {
         *        status: 500
         *        message: Error creating user
         */
-        this._router.post('/', this._userController.createUser);
+        this._router.post(
+            '/',
+            this._userController.createUser,
+            this._expressCacheUtil.resetCacheMiddleware,
+        );
         /**
          * @swagger
          * /api/v1/users:
@@ -246,6 +264,8 @@ class UserRouter {
          *    - Users
          *   parameters:
          *    - $ref: '#/components/parameters/token'
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Users found successfully
@@ -367,6 +387,7 @@ class UserRouter {
             '/:id', 
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._userController.updateUser
         );
         /**
@@ -422,6 +443,7 @@ class UserRouter {
             '/:id', 
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._userController.deleteUser
         );
     }

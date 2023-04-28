@@ -54,7 +54,7 @@ class TicketController {
         // Create a response
         let response;
         // Get the movie room id
-        const { movieRoomId } = req.params;
+        const {id: movieRoomId} = req.params;
         // Get the page and limit query parameters
         const { page, limit } = req.query;
         // Try to validate the pagination query parameters

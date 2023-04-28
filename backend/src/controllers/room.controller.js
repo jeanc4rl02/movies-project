@@ -54,7 +54,7 @@ class RoomController {
         // Create a response
         let response;
         // Get the cinema id
-        const { cinemaId } = req.params;
+        const { id: cinemaId } = req.params;
         // Get the page and limit query parameters
         const { page, limit } = req.query;
         // Try to validate the pagination query parameters

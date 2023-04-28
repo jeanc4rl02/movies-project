@@ -8,9 +8,11 @@ import Joi from 'joi';
 const paginationSchema = Joi.object({
     // User pagination schema
     page: Joi
-        .number(),
+        .number()
+        .greater(0),
     limit: Joi
         .number()
+        .greater(0)
 });
 
 // Export the pagination schema

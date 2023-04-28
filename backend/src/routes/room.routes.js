@@ -74,21 +74,27 @@ import ExpressCacheUtil from '../utils/expressCache.util.js';
  *     schema:
  *      type: string
  *     required: true
- *   
- *   id:
- *    in: path
- *    name: id
- *    description: The id on database
- *    schema:
- *     type: string
- *    required: true
- *   cinemaId:
- *    in: path
- *    name: cinemaId
- *    description: The cinema id on database
- *    schema:
- *     type: string
- *    required: true
+ *    id:
+ *     in: path
+ *     name: id
+ *     description: The id on database
+ *     schema:
+ *      type: string
+ *     required: true
+ *    limit:
+ *     in: query
+ *     name: limit
+ *     description: The limit of the query
+ *     schema:
+ *      type: integer
+ *     required: false
+ *    page:
+ *     in: query
+ *     name: page
+ *     description: The page of the query
+ *     schema:
+ *      type: integer
+ *     required: false
  * 
 */
 
@@ -128,7 +134,8 @@ class RoomRouter {
          *   tags: 
          *     - Rooms
          *   parameters:
-         *    - $ref: '#/components/parameters/token'
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Rooms found successfully
@@ -171,22 +178,21 @@ class RoomRouter {
         */
         this._router.get(
             '/', 
-            this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['client', 'seller', 'administrator']),
             this._expressCacheUtil.setCacheMiddleware(20), 
             this._roomController.getAllRooms
         );
         /**
          * @swagger
-         * /api/v1/rooms/{cinemaId}:
+         * /api/v1/rooms/cinema/{id}:
          *  get:
          *   summary: Get all rooms by cinema id
          *   description: Get all rooms by cinema id
          *   tags: 
          *     - Rooms
          *   parameters:
-         *    - $ref: '#/components/parameters/token'
-         *    - $ref: '#/components/parameters/cinemaId'  
+         *    - $ref: '#/components/parameters/id'  
+         *    - $ref: '#/components/parameters/limit'
+         *    - $ref: '#/components/parameters/page'
          *   responses:
          *    200:
          *     description: Rooms found successfully
@@ -228,9 +234,7 @@ class RoomRouter {
          * 
         */
         this._router.get(
-            '/cinema/:cinemaId',
-            this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['client', 'seller', 'administrator']),
+            '/cinema/:id',
             this._expressCacheUtil.setCacheMiddleware(20),
             this._roomController.getRoomsByCinema
         );
@@ -242,6 +246,8 @@ class RoomRouter {
         *   description: Create a room
         *   tags: 
         *    - Rooms
+        *   parameters:
+        *    - $ref: '#/components/parameters/token'
         *   requestBody:
         *    required: true
         *    content:
@@ -299,6 +305,7 @@ class RoomRouter {
             '/',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._roomController.createRoom
         );
         /**
@@ -374,6 +381,7 @@ class RoomRouter {
             '/:id',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._roomController.updateRoom
         );
         /**
@@ -429,6 +437,7 @@ class RoomRouter {
             '/:id',
             this._authUtil.verifyTokenMiddleware,
             this._authUtil.validateRoleMiddleware(['administrator']),
+            this._expressCacheUtil.resetCacheMiddleware,
             this._roomController.deleteRoom
         );
     }
