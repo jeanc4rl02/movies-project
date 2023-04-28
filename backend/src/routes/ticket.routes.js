@@ -385,7 +385,7 @@ class TicketRoutes {
         this._router.put(
             '/:ticketId',
             this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['administrator, seller, client']),
+            this._authUtil.validateRoleMiddleware(['administrator', 'seller', 'client']),
             this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.updateTicket
         );
@@ -462,7 +462,7 @@ class TicketRoutes {
         this._router.put(
             '/',
             this._authUtil.verifyTokenMiddleware,
-            this._authUtil.validateRoleMiddleware(['administrator, seller, client']),
+            this._authUtil.validateRoleMiddleware(['administrator', 'seller', 'client']),
             this._expressCacheUtil.resetCacheMiddleware,
             this._ticketController.updateSeveralTickets
         );
