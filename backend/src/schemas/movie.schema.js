@@ -7,10 +7,6 @@ import joi from 'joi';
 
 // Creating the schema
 const moviesSchema = joi.object({
-    id: joi
-        .number()
-        .integer()
-        .min(1),
     name: joi
         .string()
         .min(1)

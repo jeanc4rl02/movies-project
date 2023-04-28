@@ -63,8 +63,14 @@ const auth = new AuthUtil();
  *          required: true
  *          schema:
  *              type: string
- *          description: Id of the genre.
- * 
+ *          description: Id of the genre. * 
+ *      token:
+ *          in: header
+ *          name: x-access-token
+ *          description: The token to access the API
+ *          schema:
+ *              type: string
+ *          required: true
  *      offset:
  *          in: path
  *          name: offset
@@ -94,6 +100,8 @@ const auth = new AuthUtil();
  *  post:
  *      summary: create a new genres
  *      tags: [genres]
+ *      parameters: 
+ *          - $ref: '#/components/parameters/token' 
  *      requestBody:
  *          required: true
  *      content:
