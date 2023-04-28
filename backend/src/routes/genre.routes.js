@@ -1,10 +1,11 @@
 import {Router} from 'express';
 import { creategenres, getgenres, getOnegenres, updategenres, deletegenres } from '../controllers/genre.controller.js';
 import apicache from 'apicache';
+import ExpressCacheUtil from '../utils/expressCache.util.js';
 
 import AuthUtil from '../utils/auth.util.js';
 const router = Router();
-const cache = apicache.middleware;
+const cache = new ExpressCacheUtil();
 const auth = new AuthUtil();
 
 /**
@@ -153,7 +154,7 @@ router.post('/', auth.verifyTokenMiddleware, creategenres);
  *                              items:
  *                                  $ref: '#/components/schemas/Empty'                  
  * */
-router.get('/', cache('2 minutes'), getgenres);
+router.get('/', cache.setCacheMiddleware(20), getgenres);
 
 /**
  * @swagger
@@ -183,7 +184,7 @@ router.get('/', cache('2 minutes'), getgenres);
  *                              items:
  *                                  $ref: '#/components/schemas/Empty'    
  * */
-router.get('/:id', cache('2 minutes'), getOnegenres);
+router.get('/:id', cache.setCacheMiddleware(20), getOnegenres);
 
 /**
  * @swagger

@@ -3,9 +3,10 @@ import { createmovies, getmovies, getOnemovies, updatemovies, deletemovies } fro
 import fileUpload from 'express-fileupload';
 import apicache from 'apicache';
 import AuthUtil from '../utils/auth.util.js';
+import ExpressCacheUtil from '../utils/expressCache.util.js';
 
 const router = Router();
-const cache = apicache.middleware;
+const cache = new ExpressCacheUtil();
 const auth = new AuthUtil();
 
 /**
@@ -162,7 +163,7 @@ router.post('/', auth.verifyTokenMiddleware, fileUpload({useTempFiles : true, te
  *                              items:
  *                                  $ref: '#/components/schemas/Empty'                  
  * */
-router.get('/', cache('2 minutes'), getmovies)
+router.get('/', cache.setCacheMiddleware(20), getmovies)
 
 /**
  * @swagger
@@ -192,7 +193,7 @@ router.get('/', cache('2 minutes'), getmovies)
  *                              items:
  *                                  $ref: '#/components/schemas/Empty'    
  * */
-router.get('/:id', cache('1 minutes'), getOnemovies)
+router.get('/:id', cache.setCacheMiddleware(20), getOnemovies)
 
 /**
  * @swagger
