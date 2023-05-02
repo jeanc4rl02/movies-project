@@ -1,9 +1,8 @@
 import {Router} from 'express';
 import { creategenres, getgenres, getOnegenres, updategenres, deletegenres } from '../controllers/genre.controller.js';
-import apicache from 'apicache';
 import ExpressCacheUtil from '../utils/expressCache.util.js';
-
 import AuthUtil from '../utils/auth.util.js';
+
 const router = Router();
 const cache = new ExpressCacheUtil();
 const auth = new AuthUtil();

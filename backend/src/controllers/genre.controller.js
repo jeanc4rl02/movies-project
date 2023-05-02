@@ -1,5 +1,5 @@
 // Description: This file contains the genres controller class
-// Author: JUan David Ospina Ortega
+// Author: Juan David Ospina Ortega
 
 //Importing the genres model
 import genresModel from '../models/genre.model.js';
@@ -8,11 +8,6 @@ import genresSchema from '../schemas/genre.schema.js';
 //Importing the pagination schema
 import paginationSchema from '../schemas/pagination.schema.js';
 
-//Create the genres class
-//class genresController {
-
-//genres model instance
-//genreModel = new genresModel();
 //function to  make a genre (insert)
 export const creategenres = async (req, res) => {
     //deconstructing request
@@ -22,7 +17,7 @@ export const creategenres = async (req, res) => {
     if (error) {
         //show error
         res.status(400).json({
-            message: error.details[0].message
+            message: error.details[0].message,
         });
     } else {
         try {
@@ -32,11 +27,13 @@ export const creategenres = async (req, res) => {
             await genresModel.create(newGender);
             res.status(201).json({
                 message: 'Successful request',
-                body: newGender
+                body: newGender,
             })
         } catch (error) {
             console.log(error.message);
-            res.status(400).json({ message: error.message });
+            res.status(400).json({
+                message: error.message,
+            });
         }
     }
 }
@@ -56,10 +53,10 @@ export const getgenres = async (req, res) => {
     (genres.length != 0) ?
         res.send({
             message: 'Successful request',
-            body: genres
+            body: genres,
         }) :
         res.status(404).json({
-            message: 'At the moment we have no genres to show. Please create one before using this request.'
+            message: 'At the moment we have no genres to show. Please create one before using this request.',
         });
 }
 
@@ -73,10 +70,10 @@ export const getOnegenres = async (req, res) => {
     (genres) ?
         res.send({
             message: 'Successful request',
-            body: genres
+            body: genres,
         }) :
         res.status(404).json({
-            message: `At the moment we have no genre with id: ${id} to show. Please make sure that the provided id exists in the database.`
+            message: `At the moment we have no genre with id: ${id} to show. Please make sure that the provided id exists in the database.`,
         });
 }
 
@@ -97,15 +94,16 @@ export const updategenres = async (req, res) => {
             await genresToUpdate.save();
             res.status(200).json({
                 message: 'Successful request',
-                body: genresToUpdate
+                body: genresToUpdate,
             });
         } catch (error) {
-            console.log(error.message);
-            res.status(400).json({ message: error.message });
+            res.status(400).json({
+                message: error.message,
+            });
         }
     } else {
         res.status(404).json({
-            message: `At the moment we have no genres with id: ${id} to show. Please make sure that the provided id exists in the database.`
+            message: `At the moment we have no genres with id: ${id} to show. Please make sure that the provided id exists in the database.`,
         });
     }
 }
@@ -123,15 +121,16 @@ export const deletegenres = async (req, res) => {
             await genresModel.destroy({ where: { id } });
             //On a error deleted the genre
             res.status(200).json({
-                message: `The genres with id: ${id} was successfully deleted.`
+                message: `The genres with id: ${id} was successfully deleted.`,
             });
         } catch (error) {
-            console.log(error.message);
-            res.status(500).json({ message: error.message });
+            res.status(500).json({
+                message: error.message
+            });
         }
     } else {
         res.status(404).json({
-            message: `The genres with id: ${id} doesn't exist in the database.`
-        })
+            message: `The genres with id: ${id} doesn't exist in the database.`,
+        });
     }
 }

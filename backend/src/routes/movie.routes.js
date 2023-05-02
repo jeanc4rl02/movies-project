@@ -1,7 +1,6 @@
 import {Router} from 'express';
 import { createmovies, getmovies, getOnemovies, updatemovies, deletemovies } from '../controllers/movie.controller.js';
 import fileUpload from 'express-fileupload';
-import apicache from 'apicache';
 import AuthUtil from '../utils/auth.util.js';
 import ExpressCacheUtil from '../utils/expressCache.util.js';
 
