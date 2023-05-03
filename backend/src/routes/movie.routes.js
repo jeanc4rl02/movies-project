@@ -1,12 +1,10 @@
 import {Router} from 'express';
 import { createmovies, getmovies, getOnemovies, updatemovies, deletemovies } from '../controllers/movie.controller.js';
 import fileUpload from 'express-fileupload';
-import AuthUtil from '../utils/auth.util.js';
-import ExpressCacheUtil from '../utils/expressCache.util.js';
+import apicache from 'apicache';
 
 const router = Router();
-const cache = new ExpressCacheUtil();
-const auth = new AuthUtil();
+const cache = apicache.middleware;
 
 /**
  * @swagger
@@ -68,20 +66,13 @@ const auth = new AuthUtil();
  *              message: string
  *          example:At the moment we have no movie with id: 4 to show. Please make sure that the provided id exists in the database.
  *  parameters:
- *      id:
+ *      movieId:
  *          in: path
  *          name: id
  *          required: true
  *          schema:
  *              type: number
  *          description: Id of the movie.
- *      token:
- *          in: header
- *          name: x-access-token
- *          description: A token to access the API
- *          schema:
- *              type: string
- *          require: true
  *      offset:
  *          in: path
  *          name: offset
@@ -111,8 +102,6 @@ const auth = new AuthUtil();
  *      post:
  *          summary: Save a new movie.
  *          tags: [movies]
- *          parameters: 
- *              - $ref: '#/components/parameters/token' 
  *          requestBody:
  *              required: true
  *              content:
@@ -133,7 +122,7 @@ const auth = new AuthUtil();
  *                          schema:
  *                              $ref:  '#/components/schemas/EmptyPost'                
  * */
-router.post('/', auth.verifyTokenMiddleware, fileUpload({useTempFiles : true, tempFileDir : './uploads'}), createmovies)
+router.post('/', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), createmovies)
 
 /**
  * @swagger
@@ -162,7 +151,7 @@ router.post('/', auth.verifyTokenMiddleware, fileUpload({useTempFiles : true, te
  *                              items:
  *                                  $ref: '#/components/schemas/Empty'                  
  * */
-router.get('/', cache.setCacheMiddleware(20), getmovies)
+router.get('/', cache('2 minutes'), getmovies)
 
 /**
  * @swagger
@@ -171,7 +160,7 @@ router.get('/', cache.setCacheMiddleware(20), getmovies)
  *          summary: Get a movie by id
  *          tags: [movies]
  *          parameters:
- *              - $ref: '#/components/parameters/id'
+ *              - $ref: '#/components/parameters/movieId'
  *              - $ref: '#/components/parameters/limit'
  *              - $ref: '#/components/parameters/offset'
  *          responses: 
@@ -192,7 +181,7 @@ router.get('/', cache.setCacheMiddleware(20), getmovies)
  *                              items:
  *                                  $ref: '#/components/schemas/Empty'    
  * */
-router.get('/:id', cache.setCacheMiddleware(20), getOnemovies)
+router.get('/:id', cache('1 minutes'), getOnemovies)
 
 /**
  * @swagger
@@ -201,8 +190,7 @@ router.get('/:id', cache.setCacheMiddleware(20), getOnemovies)
  *          summary: Update a movie by id.
  *          tags: [movies]
  *          parameters:
- *              - $ref: '#/components/parameters/id'
- *              - $ref: '#/components/parameters/token'
+ *              - $ref: '#/components/parameters/movieId'
  *          requestBody:
  *              required: true
  *              content: 
@@ -229,7 +217,7 @@ router.get('/:id', cache.setCacheMiddleware(20), getOnemovies)
  *                          schema:
  *                              $ref: '#/components/schemas/noDataPut'
  */
-router.put('/:id', auth.verifyTokenMiddleware, fileUpload({useTempFiles : true, tempFileDir : './uploads'}), updatemovies)
+router.put('/:id', fileUpload({useTempFiles : true, tempFileDir : './uploads'}), updatemovies)
 
 /**
  * @swagger
@@ -238,8 +226,7 @@ router.put('/:id', auth.verifyTokenMiddleware, fileUpload({useTempFiles : true, 
  *          summary: Delete a movie by id.
  *          tags: [movies]
  *          parameters:
- *              - $ref: '#/components/parameters/id'
- *              - $ref: '#/components/parameters/token'
+ *              - $ref: '#/components/parameters/movieId'
  *          responses:
  *              200:
  *                  description: The removal of the movie has been successfully completed.
@@ -252,6 +239,6 @@ router.put('/:id', auth.verifyTokenMiddleware, fileUpload({useTempFiles : true, 
  *              404:
  *                  description: There is no movie registered with the provided id.
  */
-router.delete('/:id', auth.verifyTokenMiddleware, deletemovies)
+router.delete('/:id', deletemovies)
 
 export default router;
