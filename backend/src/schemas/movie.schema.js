@@ -4,13 +4,8 @@
 // Importing the joi library
 import joi from 'joi';
 
-
 // Creating the schema
 const moviesSchema = joi.object({
-    id: joi
-        .number()
-        .integer()
-        .min(1),
     name: joi
         .string()
         .min(1)
@@ -32,13 +27,7 @@ const moviesSchema = joi.object({
             secure_url: joi.string()
         }),
     genres: joi
-        .string()
-        /*.array()
-        .items(joi.object({
-            id: joi.number(),
-            name: joi.string(),
-        })
-        )*/
-
+        .string(),
 });
+
 export default moviesSchema;
